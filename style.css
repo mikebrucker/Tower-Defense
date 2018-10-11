@@ -1,0 +1,13 @@
+body {
+    background: linear-gradient(to right, white, yellow, red, rgb(192, 0, 0), maroon, maroon, rgb(192, 0, 0), red, yellow, white);
+    margin: 0 auto;
+    text-align: center;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 20px;
+    color: #b22222;
+    /* cursor: url('public/assets/cursor.cur'), auto; */
+}
+
+.block {
+    display: block;
+}
