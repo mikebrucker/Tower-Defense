@@ -1,8 +1,12 @@
 let controls,
 build = false,
 demolish = false,
-resources = 50,
+resources = 20,
+kills = 0,
 resourcesDisplay,
+killsDisplay,
+timerDisplay,
+timer,
 buildButton,
 demolishButton,
 buildGraphic,
@@ -13,6 +17,7 @@ hydralisks,
 deaths,
 headtowers,
 bullets,
+hydraliskHP = 100,
 towerDamage = 35;
 
 function deathAnimation(x, y) {
@@ -20,16 +25,13 @@ function deathAnimation(x, y) {
         death.destroy();
         let corpse = deaths.create(x, y, 'hydralisk').anims.play('hydra_corpse').on('animationcomplete', () => {
             corpse.destroy();
-            setTimeout( () => {
-                corpse.destroy();
-            }, 6000);
         });
     });
 }
 
 function damageHydralisks(hydralisk, bullet) {
     hydralisk.receiveDamage(towerDamage);
-    bullet.disableBody(true, true);
+    bullet.destroy();
 }
 
 function getEnemy(x, y, distance) {
@@ -42,7 +44,7 @@ function getEnemy(x, y, distance) {
     }
     enemiesInRange.sort(function([a], [b]){return a-b});
     if (enemiesInRange.length > 0) {
-        return enemiesInRange[0];
+        return enemiesInRange[0][1];
     } else {
         return false;
     }
@@ -66,15 +68,38 @@ let Tower = new Phaser.Class({
             this.timeToShoot = time + 1000;
         }
     },
+    // this.target find and when dead or out of range find new one;
     fire: function() {
-        let enemy = getEnemy(this.x, this.y, 600);
+        let enemy = getEnemy(this.x, this.y, 300);
         if (enemy) {
-            let angle = Phaser.Math.Angle.Between(this.x, this.y, enemy.x, enemy.y);
-            console.log('shot');
-            let bullet = bullets.create(this.x, this.y, 'bullet');
-            bullet.setVelocityX(-180);
-            bullet.anims.play('bullet', true);
+            bullets.get(this.x, this.y, 'bullet_single', 0).body.setCircle(1);
         }
+    }
+});
+
+let Bullet = new Phaser.Class({
+    Extends: Phaser.GameObjects.Image,
+    initialize:
+    
+    function Bullet(scene, x, y, texture, frame) {
+        Phaser.GameObjects.Image.call(this, scene, x, y, texture, frame);
+        this.dx = 0;
+        this.dy = 0;
+        this.speed = Phaser.Math.GetSpeed(500, 1);
+        this.target = getEnemy(this.x, this.y, 300);
+    },
+    update: function(time, delta) {
+        this.x += this.dx * (this.speed * delta);
+        this.y += this.dy * (this.speed * delta);
+        this.fireMe();
+        if (this.target.active === false) {
+            this.destroy();
+        }
+    },
+    fireMe: function() {
+        let angle = Phaser.Math.Angle.Between(this.x, this.y, this.target.x, this.target.y);
+        this.dx = Math.cos(angle)
+        this.dy = Math.sin(angle)
     }
 });
 
@@ -84,16 +109,22 @@ let Hydralisk = new Phaser.Class({
     initialize:
 
     function Hydralisk(scene, x, y, texture, frame) {
-        Phaser.GameObjects.Sprite.call(this, scene, x, y, texture, frame)
-        this.hp = 100;
+        Phaser.GameObjects.Sprite.call(this, scene, x, y, texture, frame);
+        this.hp = hydraliskHP;
         this.damage = 100;
     },
     receiveDamage: function(damage) {
         this.hp -= damage;
-        // console.log(this.hp);
         if (this.hp <= 0) {
             deathAnimation(this.x, this.y);
             this.destroy();
+            kills++;
+            killsDisplay.setText(`Kills: ${kills}`)
+            if (kills % 20 === 0 && kills != 0) {
+                resources += 5;
+                hydraliskHP += 10;
+                resourcesDisplay.setText(`Resources: ${resources}`)
+            }
         }
     },
 })
@@ -138,7 +169,9 @@ class SceneGame extends Phaser.Scene {
         hydralisks = this.physics.add.group({
             classType: Hydralisk, runChildUpdate: true
         });
-        bullets = this.physics.add.group();
+        bullets = this.physics.add.group({
+            classType: Bullet, runChildUpdate: true
+        });
         births = this.physics.add.group();
         deaths = this.physics.add.group();
 
@@ -149,8 +182,8 @@ class SceneGame extends Phaser.Scene {
                 let birth1 = births.create(96, 256 + (i * 32), 'hydralisk'),
                 birth2 = births.create(128, 256 + (i * 32), 'hydralisk');
                 birth1.anims.play('hydra_birth').on('animationcomplete', () => {
-                    this.add.existing(hydralisks.get(96, 256 + (i * 32), 'hydralisk'));
-                    this.add.existing(hydralisks.get(128, 256 + (i * 32), 'hydralisk'));
+                    hydralisks.get(96, 256 + (i * 32), 'hydralisk');
+                    hydralisks.get(128, 256 + (i * 32), 'hydralisk');
                     birth1.destroy();
                 }, this);
                 birth2.anims.play('hydra_birth').on('animationcomplete', () => {
@@ -170,9 +203,8 @@ class SceneGame extends Phaser.Scene {
                 y = Math.round(pointer.worldY/16);
     
                 if (logWorldLayer[y][x].properties.buildable && logWorldLayer[y-1][x].properties.buildable && logWorldLayer[y][x-1].properties.buildable && logWorldLayer[y-1][x-1].properties.buildable && resources > 0) {
-                    let headtower = headtowers.get(x*16, y*16, 'headtower');
-                    this.add.existing(headtower);
-                    headtower.setInteractive().anims.play('headtower_do').body.setCircle(16);
+                    headtowers.get(x*16, y*16, 'headtower')
+                    .setInteractive().anims.play('headtower_do').body.setCircle(16);
 
                     logWorldLayer[y][x].properties.buildable = false;
                     logWorldLayer[y-1][x].properties.buildable = false;
@@ -189,7 +221,7 @@ class SceneGame extends Phaser.Scene {
                 this.add.tween({
                     targets: buildInfoText,
                     ease: 'Sine.easeInOut',
-                    duration: 1000,
+                    duration: 2000,
                     alpha: {
                         getStart: () => 1,
                         getEnd: () => 0
@@ -232,6 +264,12 @@ class SceneGame extends Phaser.Scene {
         } else if (this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.NINE).isDown) {
             if (this.cameras.main.displayHeight < 756) {
                 this.cameras.main.zoom = this.cameras.main.zoom -= 0.05;
+            }
+        }
+
+        for (let bullet of bullets.getChildren()) {
+            if (bullet.x < 0 || bullet.y < 0 || bullet.x > 1919 || bullet.y > 799) {
+                bullet.destroy();
             }
         }
 
@@ -292,7 +330,7 @@ class SceneGame extends Phaser.Scene {
             }
         }
 
-        if (build) {
+        if (build && resources > 0) {
             let pointer = this.input.activePointer,
             x = Math.round(pointer.worldX/16),
             y = Math.round(pointer.worldY/16);
@@ -310,10 +348,10 @@ class SceneGame extends Phaser.Scene {
     }
 }
 
-let config = {
+const config = {
     type: Phaser.AUTO,
     width: 992,
-    height: 756,
+    height: 600,
     parent: 'gameContainer',
     backgroundColor: '#222222',
     physics: {
@@ -323,7 +361,7 @@ let config = {
         }
     },
     scene: [ BootGame, SceneGame, HUD ]
-},
-game = new Phaser.Game(config);
+};
+const game = new Phaser.Game(config);
 
 // x-axis 224, 1696 start and finish

@@ -2,12 +2,28 @@ body {
     background: linear-gradient(to right, white, yellow, red, rgb(192, 0, 0), maroon, maroon, rgb(192, 0, 0), red, yellow, white);
     margin: 0 auto;
     text-align: center;
-    font-family: 'Courier New', Courier, monospace;
-    font-size: 20px;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    font-size: 50px;
+    font-weight: bolder;
     color: #b22222;
-    /* cursor: url('public/assets/cursor.cur'), auto; */
 }
 
 .block {
     display: block;
+}
+
+#gameContainer {
+    display: inline-block;
+    border: 5px solid firebrick;
+    border-bottom: none;
+    background: #b22222;
+    padding: 0;
+    margin: 0;
+}
+
+footer {
+    color: black;
+    -webkit-text-fill-color: rgba(178, 34, 34, 0.2);
+    -webkit-text-stroke-width: 1px;
+    -webkit-text-stroke-color: gold;
 }
