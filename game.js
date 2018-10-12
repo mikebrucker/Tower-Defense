@@ -52,7 +52,6 @@ function getEnemy(x, y, distance) {
 
 let Tower = new Phaser.Class({
     Extends: Phaser.GameObjects.Sprite,
-
     initialize:
 
     function Tower(scene, x, y, texture, frame) {
@@ -61,18 +60,23 @@ let Tower = new Phaser.Class({
         this.damage = 10;  
         this.name = 'tower';
         this.timeToShoot = 0;
+        this.range = 300;
+        this.target = false;
     },
     update: function (time, delta) {
-        if (time > this.timeToShoot) {      
+        if (time > this.timeToShoot && this.target.active) {      
             this.fire();          
             this.timeToShoot = time + 1000;
         }
+        if (!this.target || !this.target.active || Phaser.Math.Distance.Between(this.x, this.y, this.target.x, this.target.y) >= this.range) {
+            this.target = getEnemy(this.x, this.y, this.range);
+        } 
     },
-    // this.target find and when dead or out of range find new one;
     fire: function() {
-        let enemy = getEnemy(this.x, this.y, 300);
-        if (enemy) {
-            bullets.get(this.x, this.y, 'bullet_single', 0).body.setCircle(1);
+        if (this.target.active) {
+            let bullet = bullets.get(this.x, this.y, 'bullet_single', 0);
+            bullet.body.setCircle(2);
+            bullet.target = this.target;
         }
     }
 });
@@ -85,14 +89,17 @@ let Bullet = new Phaser.Class({
         Phaser.GameObjects.Image.call(this, scene, x, y, texture, frame);
         this.dx = 0;
         this.dy = 0;
-        this.speed = Phaser.Math.GetSpeed(500, 1);
-        this.target = getEnemy(this.x, this.y, 300);
+        this.speed = Phaser.Math.GetSpeed(600, 1);
+        this.startX = x;
+        this.startY = y;
+        this.range = 320;
     },
     update: function(time, delta) {
+        this.scene.physics.add.overlap(this.target, this, damageHydralisks);
         this.x += this.dx * (this.speed * delta);
         this.y += this.dy * (this.speed * delta);
         this.fireMe();
-        if (this.target.active === false) {
+        if (!this.target.active || Phaser.Math.Distance.Between(this.startX, this.startY, this.target.x, this.target.y) >= this.range) {
             this.destroy();
         }
     },
@@ -105,7 +112,6 @@ let Bullet = new Phaser.Class({
 
 let Hydralisk = new Phaser.Class({
     Extends: Phaser.GameObjects.Sprite,
-
     initialize:
 
     function Hydralisk(scene, x, y, texture, frame) {
@@ -194,10 +200,9 @@ class SceneGame extends Phaser.Scene {
         
         this.physics.add.collider(hydralisks, worldLayer);
         this.physics.add.collider(hydralisks, headtowers);
-        this.physics.add.overlap(hydralisks, bullets, damageHydralisks);
 
         this.input.on('pointerdown', function(pointer) {
-            let buildInfoText = this.add.text(496, 378, '', {fontSize: '40px', fill: 'firebrick', fontFamily: 'Arial', stroke: 'black', strokeThickness: 3 }).setScrollFactor(0).setOrigin(0.5);
+            let buildInfoText = this.add.text(496, 500, '', {fontSize: '40px', fill: 'firebrick', fontFamily: 'Arial', stroke: 'gold', strokeThickness: 3 }).setScrollFactor(0).setOrigin(0.5);
             if (build) {
                 let x = Math.round(pointer.worldX/16),
                 y = Math.round(pointer.worldY/16);
@@ -229,14 +234,26 @@ class SceneGame extends Phaser.Scene {
                 });
             }
         }, this);
-
+        
         this.input.on('gameobjectdown', function (pointer, gameObject) {
+            let demolishInfoText = this.add.text(496, 500, '', {fontSize: '40px', fill: 'firebrick', fontFamily: 'Arial', stroke: 'gold', strokeThickness: 3 }).setScrollFactor(0).setOrigin(0.5);
             if (demolish && gameObject.name === 'tower') {
                 let x = Math.round(gameObject.x/16),
                 y = Math.round(gameObject.y/16);
-    
+                
                 gameObject.destroy();
-
+                
+                demolishInfoText.setText(`Tower Removed at (${x*16}, ${y*16})`)
+                this.add.tween({
+                    targets: demolishInfoText,
+                    ease: 'Sine.easeInOut',
+                    duration: 2000,
+                    alpha: {
+                        getStart: () => 1,
+                        getEnd: () => 0
+                    }
+                });
+                
                 logWorldLayer[y][x].properties.buildable = true;
                 logWorldLayer[y-1][x].properties.buildable = true;
                 logWorldLayer[y][x-1].properties.buildable = true;
@@ -244,8 +261,18 @@ class SceneGame extends Phaser.Scene {
             }
         }, this);
     }
-
+    
     update(time, delta) {
+        Phaser.Actions.Call(hydralisks.getChildren(), function(hydra) {
+            this.children.bringToTop(hydra);
+        }, this);
+        Phaser.Actions.Call(headtowers.getChildren(), function(tower) {
+            this.children.bringToTop(tower);
+        }, this);
+        Phaser.Actions.Call(bullets.getChildren(), function(bullet) {
+            this.children.bringToTop(bullet);
+        }, this);
+    
         controls.update(delta);
         if (this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ONE).isDown) {
             this.cameras.main.setZoom(1);
