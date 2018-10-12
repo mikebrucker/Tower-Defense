@@ -1,234 +1,140 @@
+import MoveToPlugin from 'public/assets/moveto-plugin.js';
+
 let controls,
 build = false,
 demolish = false,
+resources = 10,
+buildButton,
+demolishButton,
 buildGraphic,
 logWorldLayer,
 blankLayer,
 births,
 hydralisks,
 deaths,
-headtowers;
+headtowers,
+bullets,
+towerDamage = 10;
 
-class BootGame extends Phaser.Scene {
-
-    constructor() {
-        super({ key: 'bootGame', active: true });
-    }
-
-    preload() {
-        let progressBox = this.add.graphics(),
-        progressBar = this.add.graphics(),
-        loadText = this.add.text(496, 300, 'Loading... 0%', { fontSize: '24px', fill: 'gold', fontFamily: 'Arial', stroke: 'firebrick', strokeThickness: 8 }).setOrigin(0.5),
-        assetText = this.add.text(496, 360, 'Loading Asset:', { fontSize: '24px', fill: 'firebrick', fontFamily: 'Arial', stroke: 'gold', strokeThickness: 4 }).setOrigin(0.5);
-        progressBox.fillStyle(0xB22222, 0.8);
-        progressBox.fillRect(20, 270, 952, 60);
-        
-        this.load.on('progress', function(value) {
-            progressBar.clear();
-            progressBar.fillStyle(0xFFD700, 1);
-            progressBar.fillRect(30, 280, 932 * value, 40);
-            loadText.setText(`Loading... ${Math.round(value * 100)}%`);
-        }, this);
-        
-        this.load.on('fileprogress', function(file) {
-            assetText.setText(`Loading Asset: ${file.key}`);
-        });
-        
-        this.load.on('complete', function() {
-            this.scene.start('sceneGame');
-        }, this);
-
-        this.load.tilemapTiledJSON('map', 'public/images/sunken_defense.json');
-        this.load.image('tiles', 'public/images/ashlands_tileset.png');
-        this.load.image('tower_overlay', 'public/images/tower_overlay.png');
-        this.load.atlas('headtower', 'public/images/headtower.png', 'public/images/headtower.json');
-        this.load.atlas('hydralisk', 'public/images/hydralisk.png', 'public/images/hydralisk.json');
-    }
-
-    create() {
-        this.anims.create({
-            key: 'headtower_up',
-            frames: this.anims.generateFrameNames('headtower', { prefix: 'up', start: 1, end: 4 }),
-            frameRate: 6,
-            repeat: -1
-        });
-        this.anims.create({
-            key: 'headtower_do',
-            frames: this.anims.generateFrameNames('headtower', { prefix: 'do', start: 1, end: 4 }),
-            frameRate: 6,
-            repeat: -1
-        });
-        this.anims.create({
-            key: 'headtower_le',
-            frames: this.anims.generateFrameNames('headtower', { prefix: 'le', start: 1, end: 4 }),
-            frameRate: 6,
-            repeat: -1
-        });
-        this.anims.create({
-            key: 'headtower_ri',
-            frames: this.anims.generateFrameNames('headtower', { prefix: 'ri', start: 1, end: 4 }),
-            frameRate: 6,
-            repeat: -1
-        });
-        this.anims.create({
-            key: 'headtower_ul',
-            frames: this.anims.generateFrameNames('headtower', { prefix: 'ul', start: 1, end: 4 }),
-            frameRate: 6,
-            repeat: -1
-        });
-        this.anims.create({
-            key: 'headtower_ur',
-            frames: this.anims.generateFrameNames('headtower', { prefix: 'ur', start: 1, end: 4 }),
-            frameRate: 6,
-            repeat: -1
-        });
-        this.anims.create({
-            key: 'headtower_dl',
-            frames: this.anims.generateFrameNames('headtower', { prefix: 'dl', start: 1, end: 4 }),
-            frameRate: 6,
-            repeat: -1
-        });
-        this.anims.create({
-            key: 'headtower_dr',
-            frames: this.anims.generateFrameNames('headtower', { prefix: 'dr', start: 1, end: 4 }),
-            frameRate: 6,
-            repeat: -1
-        });
-        this.anims.create({
-            key: 'hydra_side',
-            frames: this.anims.generateFrameNames('hydralisk', { prefix: 'walk_side', start: 1, end: 7 }),
-            frameRate: 10,
-            repeat: -1
-        });
-        this.anims.create({
-            key: 'hydra_up',
-            frames: this.anims.generateFrameNames('hydralisk', { prefix: 'walk_up', start: 1, end: 7 }),
-            frameRate: 10,
-            repeat: -1
-        });
-        this.anims.create({
-            key: 'hydra_down',
-            frames: this.anims.generateFrameNames('hydralisk', { prefix: 'walk_down', start: 1, end: 7 }),
-            frameRate: 10,
-            repeat: -1
-        });
-        this.anims.create({
-            key: 'hydra_udiag',
-            frames: this.anims.generateFrameNames('hydralisk', { prefix: 'walk_udiag', start: 1, end: 7 }),
-            frameRate: 10,
-            repeat: -1
-        });
-        this.anims.create({
-            key: 'hydra_ddiag',
-            frames: this.anims.generateFrameNames('hydralisk', { prefix: 'walk_ddiag', start: 1, end: 7 }),
-            frameRate: 10,
-            repeat: -1
-        });
-        this.anims.create({
-            key: 'hydra_uldiag',
-            frames: this.anims.generateFrameNames('hydralisk', { prefix: 'walk_uldiag', start: 1, end: 7 }),
-            frameRate: 10,
-            repeat: -1
-        });
-        this.anims.create({
-            key: 'hydra_dldiag',
-            frames: this.anims.generateFrameNames('hydralisk', { prefix: 'walk_dldiag', start: 1, end: 7 }),
-            frameRate: 10,
-            repeat: -1
-        });
-        this.anims.create({
-            key: 'hydra_uhdiag',
-            frames: this.anims.generateFrameNames('hydralisk', { prefix: 'walk_uhdiag', start: 1, end: 7 }),
-            frameRate: 10,
-            repeat: -1
-        });
-        this.anims.create({
-            key: 'hydra_dhdiag',
-            frames: this.anims.generateFrameNames('hydralisk', { prefix: 'walk_dhdiag', start: 1, end: 7 }),
-            frameRate: 10,
-            repeat: -1
-        });
-        this.anims.create({
-            key: 'hydra_birth',
-            frames: this.anims.generateFrameNames('hydralisk', { prefix: 'birth', start: 1, end: 18 }),
-            frameRate: 10,
-            repeat: 0
-        })
-        this.anims.create({
-            key: 'hydra_death',
-            frames: this.anims.generateFrameNames('hydralisk', { prefix: 'death', start: 1, end: 4 }),
-            frameRate: 10,
-            repeat: 0
-        })
-        this.anims.create({
-            key: 'hydra_corpse',
-            frames: this.anims.generateFrameNames('hydralisk', { prefix: 'death', start: 5, end: 12 }),
-            frameRate: 1,
-            repeat: 0
-        })
-        this.anims.create({
-            key: 'hydra_stop',
-            frames: [ { key: 'hydralisk', frame: 'walk_down1' } ],
-            frameRate: 20,
-        });
-    }
-}
-
-class HUD extends Phaser.Scene {
-    
-    constructor() {
-        super('HUD');
-    }
-
-    create() {
-        let buildbox = this.add.graphics(),
-        demolishbox = this.add.graphics();
-        
-        
-        buildbox.fillStyle(0x000000).lineStyle(4, 0xb22222).fillRoundedRect(4, 4, 232, 48, 8).setAlpha(0.33).strokeRoundedRect(4, 4, 232, 48, 8).setScrollFactor(0);
-        demolishbox.fillStyle(0x000000).lineStyle(4, 0xb22222).fillRoundedRect(676, 4, 312, 48, 8).setAlpha(0.33).strokeRoundedRect(676, 4, 312, 48, 8).setScrollFactor(0);
-        
-        let buildButton = this.add.text(8, 0, 'Toggle Build', {fontSize: '40px', fill: 'firebrick', fontFamily: 'Arial', stroke: 'gold', strokeThickness: 6})
-        .setInteractive().on('pointerdown', function(pointer) {
-            build = !build;
-            demolish = false;
-            demolishButton.setFill('firebrick').setStroke('gold').setAlpha(0.33);
-            if (build) {
-                buildButton.setFill('gold').setStroke('firebrick').setAlpha(1);
-            } else {
-                buildButton.setFill('firebrick').setStroke('gold').setAlpha(0.33);
-            }
-        }, this).setScrollFactor(0).setAlpha(0.33);
-        let demolishButton = this.add.text(680, 0, 'Toggle Demolish', {fontSize: '40px', fill: 'firebrick', fontFamily: 'Arial', stroke: 'gold', strokeThickness: 6})
-        .setInteractive().on('pointerdown', function() {
-            build = false;
-            demolish = !demolish;
-            buildButton.setFill('firebrick').setStroke('gold').setAlpha(0.33);
-            if (demolish) {
-                demolishButton.setFill('gold').setStroke('firebrick').setAlpha(1);
-            } else {
-                demolishButton.setFill('firebrick').setStroke('gold').setAlpha(0.33);
-            }
-        }, this).setScrollFactor(0).setAlpha(0.33);
-    }
-
-    update() {
-
-    }
-}
-
-function killHydralisks(hydralisk, headtower) {
-    let death = deaths.create(hydralisk.x, hydralisk.y, 'hydralisk').anims.play('hydra_death').on('animationcomplete', () => {
+function deathAnimation(x, y) {
+    let death = deaths.create(x, y, 'hydralisk').anims.play('hydra_death').on('animationcomplete', () => {
         death.destroy();
-        let corpse = deaths.create(hydralisk.x, hydralisk.y, 'hydralisk').anims.play('hydra_corpse').on('animationcomplete', () => {
+        let corpse = deaths.create(x, y, 'hydralisk').anims.play('hydra_corpse').on('animationcomplete', () => {
             corpse.disableBody(true, false);
             setTimeout( () => {
                 corpse.destroy();
             }, 6000);
         });
     });
-    hydralisk.destroy();
 }
+
+function damageHydralisks(hydralisk) {
+    hydralisk.receiveDamage(towerDamage);
+}
+
+function getEnemy(x, y, distance) {
+    let enemyUnits = hydralisks.getChildren();
+    let enemiesInRange = [];
+    for (let i = 0; i < enemyUnits.length; i++) {       
+        if (enemyUnits[i].active && Phaser.Math.Distance.Between(x, y, enemyUnits[i].x, enemyUnits[i].y) <= distance) {
+            enemiesInRange.push([Phaser.Math.Distance.Between(x, y, enemyUnits[i].x, enemyUnits[i].y), enemyUnits[i]]);
+        }
+    }
+    enemiesInRange.sort(function([a], [b]){return a-b});
+    if (enemiesInRange.length > 0) {
+        return enemiesInRange[0];
+    } else {
+        return false;
+    }
+}
+
+let Tower = new Phaser.Class({
+    Extends: Phaser.GameObjects.Sprite,
+
+    initialize:
+
+    function Tower(scene, x, y, texture, frame) {
+        Phaser.GameObjects.Sprite.call(this, scene, x, y, texture, frame)
+        this.hp = 10;
+        this.damage = 10;  
+        this.name = 'tower';
+        this.timeToShoot = 0;
+    },
+    update: function (time, delta) {
+        if (time > this.timeToShoot) {      
+            this.fire();          
+            this.timeToShoot = time + 1000;
+        }
+    },
+    fire: function() {
+        let enemy = getEnemy(this.x, this.y, 400);
+        if (enemy) {
+            let angle = Phaser.Math.Angle.Between(this.x, this.y, enemy.x, enemy.y);
+            console.log('shot');
+            let bullet = bullet.create(this.x, this.y, 'bullet');
+            let moveBullet = this.plugins.get('rexMoveTo').add(bullet, {
+                speed: 50,
+                rotateToTarget: false
+            });
+            moveBullet.moveTo(enemy.x, enemy.y);
+            bullet.anims.play('bullet', true);
+        }
+    },
+    // addBullet: function(x, y, angle) {
+    //     let bullet = bullets.get(x, y, 'bullet');
+    //     if (bullet) {
+    //         bullet.fire(x, y, angle);
+    //         console.log('bullet');
+    //     }
+    // }
+    
+});
+
+// let Bullet = new Phaser.Class({
+//     Extends: Phaser.GameObjects.Sprite,
+
+//     initialize:
+
+//     function Bullet(scene, x, y, texture, frame) {
+//         Phaser.GameObjects.Sprite.call(this, scene, x, y, texture, frame)
+//         this.dx = 0;
+//         this.dy = 0;
+//         this.speed = Phaser.Math.GetSpeed(600, 1);
+//     },
+
+//     fire: function (x, y, angle) {
+//         this.setActive(true);
+//         this.setVisible(true);
+//         this.setPosition(x, y);
+//         this.dx = Math.cos(angle);
+//         this.dy = Math.sin(angle);
+//     },
+
+//     update: function (time, delta) {
+//         this.x += this.dx * (this.speed * delta);
+//         this.y += this.dy * (this.speed * delta);
+//     }
+// });
+
+let Hydralisk = new Phaser.Class({
+    Extends: Phaser.GameObjects.Sprite,
+
+    initialize:
+
+    function Hydralisk(scene, x, y, texture, frame) {
+        Phaser.GameObjects.Sprite.call(this, scene, x, y, texture, frame)
+        this.hp = 100;
+        this.damage = 100;
+    },
+    receiveDamage: function(damage) {
+        this.hp -= damage;
+        console.log(this.hp);
+        if (this.hp < 1) {
+            deathAnimation(this.x, this.y);
+            this.destroy();
+        }
+    }
+})
 
 class SceneGame extends Phaser.Scene {
     
@@ -264,55 +170,74 @@ class SceneGame extends Phaser.Scene {
         };
         controls = new Phaser.Cameras.Controls.FixedKeyControl(controlConfig);
         
-        headtowers = this.physics.add.group({ immovable: true });
+        headtowers = this.physics.add.group({
+            classType: Tower, runChildUpdate: true, immovable: true
+        });
+        bullets = this.physics.add.group({
+        });
+        hydralisks = this.physics.add.group({
+            classType: Hydralisk, runChildUpdate: true
+        });
         births = this.physics.add.group();
-        hydralisks = this.physics.add.group();
         deaths = this.physics.add.group();
+
+        // let bullet = bullets.create(100, 400, 'bullet');
+        // bullet.anims.play('bullet', true);
+        // bullet.setVelocityX(100);
 
         buildGraphic = this.add.image(0, 0, 'tower_overlay').setAlpha(0);
         
-        this.physics.add.collider(hydralisks, worldLayer);
-
         setInterval( () => {
             for (let i = 0; i < 10; i++) {
-                    let birth1 = births.create(96, 256 + (i * 32), 'hydralisk').setCircle(16, 6, 13),
-                    birth2 = births.create(128, 256 + (i * 32), 'hydralisk').setCircle(16, 6, 13);
-                    birth1.anims.play('hydra_birth').on('animationcomplete', () => {
-                        hydralisks.create(96, 256 + (i * 32), 'hydralisk').setCircle(16, 6, 13);
-                        birth1.destroy();
-                    });
-                    birth2.anims.play('hydra_birth').on('animationcomplete', () => {
-                        hydralisks.create(128, 256 + (i * 32), 'hydralisk').setCircle(16, 6, 13);
-                        birth2.destroy();
-                    });
+                let birth1 = births.create(96, 256 + (i * 32), 'hydralisk'),
+                birth2 = births.create(128, 256 + (i * 32), 'hydralisk');
+                birth1.anims.play('hydra_birth').on('animationcomplete', () => {
+                    this.add.existing(hydralisks.get(96, 256 + (i * 32), 'hydralisk'));
+                    this.add.existing(hydralisks.get(128, 256 + (i * 32), 'hydralisk'));
+                    birth1.destroy();
+                }, this);
+                birth2.anims.play('hydra_birth').on('animationcomplete', () => {
+                    birth2.destroy();
+                }, this);
             }
-            // hydra.anims.play('hydra_birth').on('animationcomplete', function() {
-                // hydra.setVelocityX(60);
-            // }, this);
         }, 5000);
-
-        this.physics.add.overlap(hydralisks, headtowers, killHydralisks, null, this);
+        
+        this.physics.add.collider(hydralisks, worldLayer);
+        this.physics.add.collider(hydralisks, headtowers);
+        this.physics.add.overlap(hydralisks, bullets, damageHydralisks, null, this);
 
         this.input.on('pointerdown', function(pointer) {
+            let buildInfoText = this.add.text(496, 378, '', {fontSize: '40px', fill: 'firebrick', fontFamily: 'Arial', stroke: 'black', strokeThickness: 3 }).setScrollFactor(0).setOrigin(0.5);
             if (build) {
                 let x = Math.round(pointer.worldX/16),
                 y = Math.round(pointer.worldY/16);
-                console.log(x*16 + ', ' + y*16)
     
-                if (logWorldLayer[y][x].properties.buildable && logWorldLayer[y-1][x].properties.buildable && logWorldLayer[y][x-1].properties.buildable && logWorldLayer[y-1][x-1].properties.buildable) {
-                    
-                    let ht = headtowers.create(x*16, y*16, 'headtower').setCircle(16);
-                    ht.setInteractive().setName('tower').anims.play('headtower_do');
+                if (logWorldLayer[y][x].properties.buildable && logWorldLayer[y-1][x].properties.buildable && logWorldLayer[y][x-1].properties.buildable && logWorldLayer[y-1][x-1].properties.buildable && resources > 0) {
+                    let headtower = headtowers.get(x*16, y*16, 'headtower');
+                    this.add.existing(headtower);
+                    headtower.setInteractive().anims.play('headtower_do').body.setCircle(16);
 
                     logWorldLayer[y][x].properties.buildable = false;
                     logWorldLayer[y-1][x].properties.buildable = false;
                     logWorldLayer[y][x-1].properties.buildable = false;
                     logWorldLayer[y-1][x-1].properties.buildable = false;
-                    console.log("√");
-                
+
+                    resources--;
+
+                } else if (resources < 1) {
+                    buildInfoText.setText('Need Additional Resources');
                 } else {
-                    console.log("can't place tower here");
+                    buildInfoText.setText('Cannot Build Here');
                 }
+                this.add.tween({
+                    targets: buildInfoText,
+                    ease: 'Sine.easeInOut',
+                    duration: 1000,
+                    alpha: {
+                        getStart: () => 1,
+                        getEnd: () => 0
+                    }
+                });
             }
         }, this);
 
@@ -322,7 +247,6 @@ class SceneGame extends Phaser.Scene {
                 y = Math.round(gameObject.y/16);
     
                 gameObject.destroy();
-                console.log('tower removed');
 
                 logWorldLayer[y][x].properties.buildable = true;
                 logWorldLayer[y-1][x].properties.buildable = true;
@@ -405,7 +329,7 @@ class SceneGame extends Phaser.Scene {
                 }
             }
             if (hydra.body.x < 225) {
-                hydra.setVelocityX(60);
+                hydra.body.setVelocityX(60);
             } else if (hydra.body.x > 1808) {
                 hydra.destroy();
             }
@@ -415,9 +339,11 @@ class SceneGame extends Phaser.Scene {
             let pointer = this.input.activePointer,
             x = Math.round(pointer.worldX/16),
             y = Math.round(pointer.worldY/16);
+
             buildGraphic.setPosition(x*16, y*16).setAlpha(1);
-            buildGraphic.setTint(0x00FF00);
+
             if (logWorldLayer[y][x].properties.buildable && logWorldLayer[y-1][x].properties.buildable && logWorldLayer[y][x-1].properties.buildable && logWorldLayer[y-1][x-1].properties.buildable) {
+                buildGraphic.setTint(0x00FF00);
             } else {
                 buildGraphic.setTint(0xFF0000);
             }
@@ -438,6 +364,13 @@ let config = {
         arcade: {
             gravity: { y: 0 }
         }
+    },
+    plugins: {
+        global: [{
+            key: 'rexMoveTo',
+            plugin: MoveToPlugin,
+            start: true
+        }]
     },
     scene: [ BootGame, SceneGame, HUD ]
 },
