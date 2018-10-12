@@ -19,7 +19,7 @@ function deathAnimation(x, y) {
     let death = deaths.create(x, y, 'hydralisk').anims.play('hydra_death').on('animationcomplete', () => {
         death.destroy();
         let corpse = deaths.create(x, y, 'hydralisk').anims.play('hydra_corpse').on('animationcomplete', () => {
-            corpse.disableBody(true, false);
+            corpse.destroy();
             setTimeout( () => {
                 corpse.destroy();
             }, 6000);
