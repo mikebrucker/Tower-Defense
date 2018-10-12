@@ -74,4 +74,4 @@ const TICKINGMODE = {
     'always': 2
 }
 
-export default TickTask;
+// export default TickTask;

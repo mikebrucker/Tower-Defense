@@ -1,5 +1,3 @@
-import MoveToPlugin from 'public/assets/moveto-plugin.js';
-
 let controls,
 build = false,
 demolish = false,
@@ -71,7 +69,7 @@ let Tower = new Phaser.Class({
         if (enemy) {
             let angle = Phaser.Math.Angle.Between(this.x, this.y, enemy.x, enemy.y);
             console.log('shot');
-            let bullet = bullet.create(this.x, this.y, 'bullet');
+            let bullet = bullets.create(this.x, this.y, 'bullet');
             let moveBullet = this.plugins.get('rexMoveTo').add(bullet, {
                 speed: 50,
                 rotateToTarget: false
@@ -364,13 +362,6 @@ let config = {
         arcade: {
             gravity: { y: 0 }
         }
-    },
-    plugins: {
-        global: [{
-            key: 'rexMoveTo',
-            plugin: MoveToPlugin,
-            start: true
-        }]
     },
     scene: [ BootGame, SceneGame, HUD ]
 },

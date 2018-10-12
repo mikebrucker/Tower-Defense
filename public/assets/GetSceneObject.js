@@ -13,4 +13,4 @@ var isSceneObject = function(object) {
     return (object instanceof SceneKlass);
 }
 
-export default GetSceneObject;
+// export default GetSceneObject;

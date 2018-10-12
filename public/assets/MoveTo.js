@@ -1,5 +1,5 @@
-import TickTask from 'TickTask.js';
-import GetSceneObject from 'GetSceneObject.js';
+// import TickTask from 'TickTask.js';
+// import GetSceneObject from 'GetSceneObject.js';
 
 const GetValue = Phaser.Utils.Objects.GetValue;
 const IsPlainObject = Phaser.Utils.Objects.IsPlainObject;

@@ -33,6 +33,10 @@ class BootGame extends Phaser.Scene {
         this.load.atlas('headtower', 'public/images/headtower.png', 'public/images/headtower.json');
         this.load.atlas('hydralisk', 'public/images/hydralisk.png', 'public/images/hydralisk.json');
         this.load.atlas('bullet', 'public/images/bullet.png', 'public/images/bullet.json');
+        // this.load.plugin('moveto-plugin', 'public/assets/moveto-plugin.js')
+        // this.load.plugin('MoveTo', 'public/assets/MoveTo.js')
+        // this.load.plugin('TickTask', 'public/assets/TickTask.js')
+        // this.load.plugin('GetSceneObject', 'public/assets/GetSceneObject.js')
     }
 
     create() {

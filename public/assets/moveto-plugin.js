@@ -1,4 +1,4 @@
-import MoveTo from 'MoveTo.js';
+// import MoveTo from 'MoveTo.js';
 
 class MoveToPlugin extends Phaser.Plugins.BasePlugin {
 
@@ -16,4 +16,4 @@ class MoveToPlugin extends Phaser.Plugins.BasePlugin {
     }
 }
 
-export default MoveToPlugin;
+// export default MoveToPlugin;
