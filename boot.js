@@ -168,7 +168,7 @@ class BootGame extends Phaser.Scene {
         this.anims.create({
             key: 'bullet',
             frames: this.anims.generateFrameNames('bullet', { prefix: 'bullet', start: 1, end: 8 }),
-            frameRate: 10,
+            frameRate: 30,
             repeat: -1
         })
     }

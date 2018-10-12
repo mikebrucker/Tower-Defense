@@ -12,6 +12,8 @@ class HUD extends Phaser.Scene {
         buildbox.fillStyle(0x000000).lineStyle(4, 0xb22222).fillRoundedRect(4, 4, 232, 48, 8).setAlpha(0.33).strokeRoundedRect(4, 4, 232, 48, 8).setScrollFactor(0);
         demolishbox.fillStyle(0x000000).lineStyle(4, 0xb22222).fillRoundedRect(676, 4, 312, 48, 8).setAlpha(0.33).strokeRoundedRect(676, 4, 312, 48, 8).setScrollFactor(0);
         
+        resourcesDisplay = this.add.text(496, 14, `Resources: ${resources}`, {fontSize: '20px', fill: 'firebrick', fontFamily: 'Arial', stroke: 'gold', strokeThickness: 3}).setOrigin(0.5);
+
         buildButton = this.add.text(8, 0, 'Toggle Build', {fontSize: '40px', fill: 'firebrick', fontFamily: 'Arial', stroke: 'gold', strokeThickness: 6})
         .setInteractive().on('pointerdown', function(pointer) {
             build = !build;

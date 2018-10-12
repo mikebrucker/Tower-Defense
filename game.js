@@ -1,7 +1,8 @@
 let controls,
 build = false,
 demolish = false,
-resources = 10,
+resources = 50,
+resourcesDisplay,
 buildButton,
 demolishButton,
 buildGraphic,
@@ -12,7 +13,7 @@ hydralisks,
 deaths,
 headtowers,
 bullets,
-towerDamage = 10;
+towerDamage = 35;
 
 function deathAnimation(x, y) {
     let death = deaths.create(x, y, 'hydralisk').anims.play('hydra_death').on('animationcomplete', () => {
@@ -26,8 +27,9 @@ function deathAnimation(x, y) {
     });
 }
 
-function damageHydralisks(hydralisk) {
+function damageHydralisks(hydralisk, bullet) {
     hydralisk.receiveDamage(towerDamage);
+    bullet.disableBody(true, true);
 }
 
 function getEnemy(x, y, distance) {
@@ -65,54 +67,16 @@ let Tower = new Phaser.Class({
         }
     },
     fire: function() {
-        let enemy = getEnemy(this.x, this.y, 400);
+        let enemy = getEnemy(this.x, this.y, 600);
         if (enemy) {
             let angle = Phaser.Math.Angle.Between(this.x, this.y, enemy.x, enemy.y);
             console.log('shot');
             let bullet = bullets.create(this.x, this.y, 'bullet');
-            let moveBullet = this.plugins.get('rexMoveTo').add(bullet, {
-                speed: 50,
-                rotateToTarget: false
-            });
-            moveBullet.moveTo(enemy.x, enemy.y);
+            bullet.setVelocityX(-180);
             bullet.anims.play('bullet', true);
         }
-    },
-    // addBullet: function(x, y, angle) {
-    //     let bullet = bullets.get(x, y, 'bullet');
-    //     if (bullet) {
-    //         bullet.fire(x, y, angle);
-    //         console.log('bullet');
-    //     }
-    // }
-    
+    }
 });
-
-// let Bullet = new Phaser.Class({
-//     Extends: Phaser.GameObjects.Sprite,
-
-//     initialize:
-
-//     function Bullet(scene, x, y, texture, frame) {
-//         Phaser.GameObjects.Sprite.call(this, scene, x, y, texture, frame)
-//         this.dx = 0;
-//         this.dy = 0;
-//         this.speed = Phaser.Math.GetSpeed(600, 1);
-//     },
-
-//     fire: function (x, y, angle) {
-//         this.setActive(true);
-//         this.setVisible(true);
-//         this.setPosition(x, y);
-//         this.dx = Math.cos(angle);
-//         this.dy = Math.sin(angle);
-//     },
-
-//     update: function (time, delta) {
-//         this.x += this.dx * (this.speed * delta);
-//         this.y += this.dy * (this.speed * delta);
-//     }
-// });
 
 let Hydralisk = new Phaser.Class({
     Extends: Phaser.GameObjects.Sprite,
@@ -126,12 +90,12 @@ let Hydralisk = new Phaser.Class({
     },
     receiveDamage: function(damage) {
         this.hp -= damage;
-        console.log(this.hp);
-        if (this.hp < 1) {
+        // console.log(this.hp);
+        if (this.hp <= 0) {
             deathAnimation(this.x, this.y);
             this.destroy();
         }
-    }
+    },
 })
 
 class SceneGame extends Phaser.Scene {
@@ -171,17 +135,12 @@ class SceneGame extends Phaser.Scene {
         headtowers = this.physics.add.group({
             classType: Tower, runChildUpdate: true, immovable: true
         });
-        bullets = this.physics.add.group({
-        });
         hydralisks = this.physics.add.group({
             classType: Hydralisk, runChildUpdate: true
         });
+        bullets = this.physics.add.group();
         births = this.physics.add.group();
         deaths = this.physics.add.group();
-
-        // let bullet = bullets.create(100, 400, 'bullet');
-        // bullet.anims.play('bullet', true);
-        // bullet.setVelocityX(100);
 
         buildGraphic = this.add.image(0, 0, 'tower_overlay').setAlpha(0);
         
@@ -202,7 +161,7 @@ class SceneGame extends Phaser.Scene {
         
         this.physics.add.collider(hydralisks, worldLayer);
         this.physics.add.collider(hydralisks, headtowers);
-        this.physics.add.overlap(hydralisks, bullets, damageHydralisks, null, this);
+        this.physics.add.overlap(hydralisks, bullets, damageHydralisks);
 
         this.input.on('pointerdown', function(pointer) {
             let buildInfoText = this.add.text(496, 378, '', {fontSize: '40px', fill: 'firebrick', fontFamily: 'Arial', stroke: 'black', strokeThickness: 3 }).setScrollFactor(0).setOrigin(0.5);
@@ -221,7 +180,7 @@ class SceneGame extends Phaser.Scene {
                     logWorldLayer[y-1][x-1].properties.buildable = false;
 
                     resources--;
-
+                    resourcesDisplay.setText(`Resources: ${resources}`)
                 } else if (resources < 1) {
                     buildInfoText.setText('Need Additional Resources');
                 } else {
