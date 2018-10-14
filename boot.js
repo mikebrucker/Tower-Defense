@@ -27,7 +27,7 @@ class BootGame extends Phaser.Scene {
             this.scene.start('sceneGame');
         }, this);
 
-        this.load.tilemapTiledJSON('map', 'public/images/sunken_defense.json');
+        this.load.tilemapTiledJSON('map', 'public/images/sunken_defense_path.json');
         this.load.image('tiles', 'public/images/ashlands_tileset.png');
         this.load.image('tower_overlay', 'public/images/tower_overlay.png');
         this.load.image('bullet_single', 'public/images/bullet_single.png');
