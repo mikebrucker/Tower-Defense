@@ -26,6 +26,7 @@ nextWaveButton,
 
 buildGraphic,
 logWorldLayer,
+path,
 
 waveInfoText,
 countDownText,
@@ -45,83 +46,88 @@ numberOfTowers = 0,
 waveNumber = 1,
 kills = 0,
 hydraliskHP = 96,
-hydraliskSpeed = 72,
+hydraliskHPIncrease = 16,
+hydraliskSpeed = 40,
 hydralisksEscaped = 0,
-birthTime = 4200;
+birthTime = 3496;
 
 function nextWave() {
     let swarm = 0;
     let birth1 = births.create(16, 512, 'hydralisk');
     birth1.anims.play('hydra_birth').on('animationcomplete', () => {
-        hydralisks.get(16, 512, 'hydralisk').body.setVelocity(hydraliskSpeed, 0);
+        let hydra = hydralisks.get(16, 512, 'hydralisk')
+        hydra.follower.t = 16/3744;
         birth1.destroy();
     }, this);
     let birth2 = births.create(52, 512, 'hydralisk');
     birth2.anims.play('hydra_birth').on('animationcomplete', () => {
-        hydralisks.get(52, 512, 'hydralisk').body.setVelocity(hydraliskSpeed, 0);
+        let hydra = hydralisks.get(52, 512, 'hydralisk')
+        hydra.follower.t = 52/3744;
         birth2.destroy();
     }, this);
     let birth3 = births.create(88, 512, 'hydralisk');
     birth3.anims.play('hydra_birth').on('animationcomplete', () => {
-        hydralisks.get(88, 512, 'hydralisk').body.setVelocity(hydraliskSpeed, 0);
+        let hydra = hydralisks.get(88, 512, 'hydralisk')
+        hydra.follower.t = 88/3744;
         birth3.destroy();
     }, this);
     let birth4 = births.create(124, 512, 'hydralisk');
     birth4.anims.play('hydra_birth').on('animationcomplete', () => {
-        hydralisks.get(124, 512, 'hydralisk').body.setVelocity(hydraliskSpeed, 0);
+        let hydra = hydralisks.get(124, 512, 'hydralisk')
+        hydra.follower.t = 124/3744;
         birth4.destroy();
     }, this);
     let birth5 = births.create(160, 512, 'hydralisk');
     birth5.anims.play('hydra_birth').on('animationcomplete', () => {
-        hydralisks.get(160, 512, 'hydralisk').body.setVelocity(hydraliskSpeed, 0);
+        let hydra = hydralisks.get(160, 512, 'hydralisk')
+        hydra.follower.t = 160/3744;
         birth5.destroy();
     }, this);
     let birth6 = births.create(196, 512, 'hydralisk');
     birth6.anims.play('hydra_birth').on('animationcomplete', () => {
-        hydralisks.get(196, 512, 'hydralisk').body.setVelocity(hydraliskSpeed, 0);
+        let hydra = hydralisks.get(196, 512, 'hydralisk')
+        hydra.follower.t = 196/3744;
         birth6.destroy();
     }, this);
     let nextWave = setInterval( () => {
         let birth1 = births.create(16, 512, 'hydralisk');
         birth1.anims.play('hydra_birth').on('animationcomplete', () => {
-            hydralisks.get(16, 512, 'hydralisk').body.setVelocity(hydraliskSpeed, 0);
+            let hydra = hydralisks.get(16, 512, 'hydralisk');
+            hydra.follower.t = 16/3744;
             birth1.destroy();
         }, this);
         let birth2 = births.create(52, 512, 'hydralisk');
         birth2.anims.play('hydra_birth').on('animationcomplete', () => {
-            hydralisks.get(52, 512, 'hydralisk').body.setVelocity(hydraliskSpeed, 0);
+            let hydra = hydralisks.get(52, 512, 'hydralisk');
+            hydra.follower.t = 52/3744;
             birth2.destroy();
         }, this);
         let birth3 = births.create(88, 512, 'hydralisk');
         birth3.anims.play('hydra_birth').on('animationcomplete', () => {
-            hydralisks.get(88, 512, 'hydralisk').body.setVelocity(hydraliskSpeed, 0);
+            let hydra = hydralisks.get(88, 512, 'hydralisk');
+            hydra.follower.t = 88/3744;
             birth3.destroy();
         }, this);
         let birth4 = births.create(124, 512, 'hydralisk');
         birth4.anims.play('hydra_birth').on('animationcomplete', () => {
-            hydralisks.get(124, 512, 'hydralisk').body.setVelocity(hydraliskSpeed, 0);
+            let hydra = hydralisks.get(124, 512, 'hydralisk');
+            hydra.follower.t = 124/3744;
             birth4.destroy();
         }, this);
         let birth5 = births.create(160, 512, 'hydralisk');
         birth5.anims.play('hydra_birth').on('animationcomplete', () => {
-            hydralisks.get(160, 512, 'hydralisk').body.setVelocity(hydraliskSpeed, 0);
+            let hydra = hydralisks.get(160, 512, 'hydralisk');
+            hydra.follower.t = 160/3744;
             birth5.destroy();
         }, this);
         let birth6 = births.create(196, 512, 'hydralisk');
         birth6.anims.play('hydra_birth').on('animationcomplete', () => {
-            hydralisks.get(196, 512, 'hydralisk').body.setVelocity(hydraliskSpeed, 0);
+            let hydra = hydralisks.get(196, 512, 'hydralisk');
+            hydra.follower.t = 196/3744;
             birth6.destroy();
         }, this);
         swarm++;
         if (swarm > 2) {
-            waveNumber++;
-            hydraliskHP += 16;
-            if (hydraliskSpeed < 180) {
-                hydraliskSpeed += 3;
-            }
-            if (birthTime > 2200) {
-                birthTime -= 50;
-            }
             clearInterval(nextWave);
         }
     }, birthTime);
@@ -216,117 +222,69 @@ class Hydralisk extends Phaser.GameObjects.Sprite {
         super(scene, x, y, texture, frame);
         this.hp = hydraliskHP;
         this.damage = 100;
+        this.follower = { t: 0, vec: new Phaser.Math.Vector2() };
     }
-
+    
     update(time, delta) {
-        if (this.body.velocity.x > 0) {
-            if (this.body.velocity.y > 0) {
-                if (Math.abs(this.body.velocity.x) < Math.abs(this.body.velocity.y)) {
-                    this.anims.play('hydra_dldiag', true).setFlipX(false);
-                } else if (Math.abs(this.body.velocity.x) > Math.abs(this.body.velocity.y)) {
-                    this.anims.play('hydra_dhdiag', true).setFlipX(false);
-                } else {
+        let prevX = this.follower.vec.x,
+        prevY = this.follower.vec.y;
+
+        this.follower.t += hydraliskSpeed/100000;
+    
+        path.getPoint(this.follower.t, this.follower.vec);
+        
+        this.setPosition(this.follower.vec.x, this.follower.vec.y);
+        
+        if (this.follower.vec.x > prevX) {
+            if (this.follower.vec.y > prevY) {
+                // if (Math.abs(this.body.velocity.x) < Math.abs(this.body.velocity.y)) {
+                //     this.anims.play('hydra_dldiag', true).setFlipX(false);
+                // } else if (Math.abs(this.body.velocity.x) > Math.abs(this.body.velocity.y)) {
+                //     this.anims.play('hydra_dhdiag', true).setFlipX(false);
+                // } else {
                     this.anims.play('hydra_ddiag', true).setFlipX(false);
-                }
-            } else if (this.body.velocity.y < 0) {
-                if (Math.abs(this.body.velocity.x) < Math.abs(this.body.velocity.y)) {
-                    this.anims.play('hydra_uhdiag', true).setFlipX(false);
-                } else if (Math.abs(this.body.velocity.x) > Math.abs(this.body.velocity.y)) {
-                    this.anims.play('hydra_uldiag', true).setFlipX(false);
-                } else {
+                // }
+            } else if (this.follower.vec.y < prevY) {
+                // if (Math.abs(this.body.velocity.x) < Math.abs(this.body.velocity.y)) {
+                //     this.anims.play('hydra_uhdiag', true).setFlipX(false);
+                // } else if (Math.abs(this.body.velocity.x) > Math.abs(this.body.velocity.y)) {
+                //     this.anims.play('hydra_uldiag', true).setFlipX(false);
+                // } else {
                     this.anims.play('hydra_udiag', true).setFlipX(false);
-                }
+                // }
             } else {
                 this.anims.play('hydra_side', true).setFlipX(false);
             }
-        } else if (this.body.velocity.x < 0) {
-            if (this.body.velocity.y > 0) {
-                if (Math.abs(this.body.velocity.x) < Math.abs(this.body.velocity.y)) {
-                    this.anims.play('hydra_dldiag', true).setFlipX(true);
-                } else if (Math.abs(this.body.velocity.x) > Math.abs(this.body.velocity.y)) {
-                    this.anims.play('hydra_dhdiag', true).setFlipX(true);
-                } else {
+        } else if (this.follower.vec.x < prevX) {
+            if (this.follower.vec.y > prevY) {
+            //     if (Math.abs(this.body.velocity.x) < Math.abs(this.body.velocity.y)) {
+            //         this.anims.play('hydra_dldiag', true).setFlipX(true);
+            //     } else if (Math.abs(this.body.velocity.x) > Math.abs(this.body.velocity.y)) {
+            //         this.anims.play('hydra_dhdiag', true).setFlipX(true);
+            //     } else {
                     this.anims.play('hydra_ddiag', true).setFlipX(true);
-                }
-            } else if (this.body.velocity.y < 0) {
-                if (Math.abs(this.body.velocity.x) < Math.abs(this.body.velocity.y)) {
-                    this.anims.play('hydra_uhdiag', true).setFlipX(true);
-                } else if (Math.abs(this.body.velocity.x) > Math.abs(this.body.velocity.y)) {
-                    this.anims.play('hydra_uldiag', true).setFlipX(true);
-                } else {
+            //     }
+            } else if (this.follower.vec.y < prevY) {
+            //     if (Math.abs(this.body.velocity.x) < Math.abs(this.body.velocity.y)) {
+            //         this.anims.play('hydra_uhdiag', true).setFlipX(true);
+            //     } else if (Math.abs(this.body.velocity.x) > Math.abs(this.body.velocity.y)) {
+            //         this.anims.play('hydra_uldiag', true).setFlipX(true);
+            //     } else {
                     this.anims.play('hydra_udiag', true).setFlipX(true);
-                }
-            } else {
+            //     }
+            // } else {
                 this.anims.play('hydra_side', true).setFlipX(true);
-            }
+            // }
         } else {
-            if (this.body.velocity.y > 0) {
+            if (this.follower.vec.y > prevY) {
                 this.anims.play('hydra_down', true);
-            } else if (this.body.velocity.y < 0) {
+            } else if (this.follower.vec.y < prevY) {
                 this.anims.play('hydra_up', true);
             } else {
                 this.anims.play('hydra_stop');
             }
         }
-
-        if (Phaser.Math.Distance.Between(this.x, this.y, 432, 512) < 4 && this.name != '432, 512') {
-            this.setPosition(432, 512);
-            this.setName('432, 512');
-            this.body.setVelocity(0, -hydraliskSpeed);
-        } else if (Phaser.Math.Distance.Between(this.x, this.y, 432, 288) < 4 && this.name != '432, 288') {
-            this.setPosition(432, 288);
-            this.setName('432, 288');
-            this.body.setVelocity(hydraliskSpeed, 0);
-        } else if (Phaser.Math.Distance.Between(this.x, this.y, 656, 288) < 4 && this.name != '656, 288') {
-            this.setPosition(656, 288);
-            this.setName('656, 288');
-            this.body.setVelocity(0, hydraliskSpeed);
-        } else if (Phaser.Math.Distance.Between(this.x, this.y, 656, 512) < 4 && this.name != '656, 512') {
-            this.setPosition(656, 512);
-            this.setName('656, 512');
-            this.body.setVelocity(hydraliskSpeed, 0);
-        } else if (Phaser.Math.Distance.Between(this.x, this.y, 864, 512) < 4 && this.name != '864, 512') {
-            this.setPosition(864, 512)
-            this.setName('864, 512')
-            this.body.setVelocity(0, -hydraliskSpeed);
-        } else if (Phaser.Math.Distance.Between(this.x, this.y, 864, 224) < 4 && this.name != '864, 224') {
-            this.setPosition(864, 224)
-            this.setName('864, 224')
-            this.body.setVelocity(hydraliskSpeed, 0);
-        } else if (Phaser.Math.Distance.Between(this.x, this.y, 960, 224) < 4 && this.name != '960, 224') {
-            this.setPosition(960, 224)
-            this.setName('960, 224')
-            this.body.setVelocity(0, hydraliskSpeed);
-        } else if (Phaser.Math.Distance.Between(this.x, this.y, 960, 576) < 4 && this.name != '960, 576') {
-            this.setPosition(960, 576)
-            this.setName('960, 576')
-            this.body.setVelocity(hydraliskSpeed, 0);
-        } else if (Phaser.Math.Distance.Between(this.x, this.y, 1056, 576) < 4 && this.name != '1056, 576') {
-            this.setPosition(1056, 576)
-            this.setName('1056, 576')
-            this.body.setVelocity(0, -hydraliskSpeed);
-        } else if (Phaser.Math.Distance.Between(this.x, this.y, 1056, 288) < 4 && this.name != '1056, 288') {
-            this.setPosition(1056, 288)
-            this.setName('1056, 288')
-            this.body.setVelocity(hydraliskSpeed, 0);
-        } else if (Phaser.Math.Distance.Between(this.x, this.y, 1264, 288) < 4 && this.name != '1264, 288') {
-            this.setPosition(1264, 288)
-            this.setName('1264, 288')
-            this.body.setVelocity(0, hydraliskSpeed);
-        } else if (Phaser.Math.Distance.Between(this.x, this.y, 1264, 512) < 4 && this.name != '1264, 512') {
-            this.setPosition(1264, 512)
-            this.setName('1264, 512')
-            this.body.setVelocity(hydraliskSpeed, 0);
-        } else if (Phaser.Math.Distance.Between(this.x, this.y, 1488, 512) < 4 && this.name != '1488, 512') {
-            this.setPosition(1488, 512)
-            this.setName('1488, 512')
-            this.body.setVelocity(0, -hydraliskSpeed);
-        } else if (Phaser.Math.Distance.Between(this.x, this.y, 1488, 288) < 4 && this.name != '1488, 288') {
-            this.setPosition(1488, 288)
-            this.setName('1488, 288')
-            this.body.setVelocity(hydraliskSpeed, 0);
-        }
-
+        
         if (this.body.x > 1808) {
             hydralisksEscaped++; 
             if (hydralisksEscaped === 1) {
@@ -347,7 +305,7 @@ class Hydralisk extends Phaser.GameObjects.Sprite {
             this.destroy();
         }
     }
-
+    
     receiveDamage(damage) {
         this.hp -= damage;
         if (this.hp <= 0) {
@@ -366,7 +324,7 @@ class Hydralisk extends Phaser.GameObjects.Sprite {
             }
         }
     }
-
+    
     deathAnimation(x, y) {
         let death = deaths.create(x, y, 'hydralisk').anims.play('hydra_death').on('animationcomplete', () => {
             death.destroy();
@@ -382,11 +340,11 @@ class SceneGame extends Phaser.Scene {
     constructor() {
         super('sceneGame');
     }
-
+    
     create() {
         this.scene.launch('HUD');
         this.input.setDefaultCursor('url(public/assets/cursor.cur), pointer')
-
+        
         const map = this.make.tilemap({ key: 'map' });
         const tileset = map.addTilesetImage('ashlands', 'tiles');
         const worldLayer = map.createDynamicLayer('World', tileset, 0, 0);
@@ -395,6 +353,23 @@ class SceneGame extends Phaser.Scene {
         
         worldLayer.setCollisionBetween(259, 268, true, 'World');
         worldLayer.setCollisionBetween(519, 534, true, 'World');
+        
+        path = this.add.path(0, 512);
+        path.lineTo(432, 512);
+        path.lineTo(432, 288);
+        path.lineTo(656, 288);
+        path.lineTo(656, 512);
+        path.lineTo(864, 512);
+        path.lineTo(864, 224);
+        path.lineTo(960, 224);
+        path.lineTo(960, 576);
+        path.lineTo(1056, 576);
+        path.lineTo(1056, 288);
+        path.lineTo(1264, 288);
+        path.lineTo(1264, 512);
+        path.lineTo(1488, 512);
+        path.lineTo(1488, 288);
+        path.lineTo(1920, 288);
         
         this.cameras.main.setBounds(0, 0, map.widthInPixels, map.heightInPixels);
         this.cameras.main.centerToBounds();

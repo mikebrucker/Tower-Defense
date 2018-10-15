@@ -3,7 +3,7 @@
 }
 
 body {
-    background: linear-gradient(to right, white, yellow, red, rgb(192, 0, 0), maroon, maroon, rgb(192, 0, 0), red, yellow, white);
+    background: linear-gradient(to right, yellow, red, firebrick, maroon, maroon, rgb(192, 0, 0), red, yellow);
     margin: 0 auto;
     text-align: center;
     font-family: Verdana, Geneva, Tahoma, sans-serif;
@@ -22,13 +22,13 @@ body {
 
 #gameContainer {
     border-bottom: 1px;
-    background: #b22222;
+    background: firebrick;
 }
 
 .instructions {
     -webkit-text-stroke-width: 2px;
     -webkit-text-stroke-color: black;
-    -webkit-text-fill-color: white;
+    -webkit-text-fill-color: gold;
     font-size: 28px;
     text-align: left;
 }

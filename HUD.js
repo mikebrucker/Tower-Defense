@@ -3,16 +3,7 @@ class HUD extends Phaser.Scene {
     constructor() {
         super('HUD');
     }
-    // timerDisplay,
-    // resourcesDisplay,
-    // killsDisplay,
-    // hydraliskHPDisplay,
-    // hydraliskSpeedDisplay,
-    // numberOfTowersDisplay,
-    // waveNumberDisplay,
-    // towerDamageDisplay,
-    // hydralisksEscapedDisplay,
-    
+
     create() {
         this.add.graphics().fillStyle(0x000000).fillRect(0, 542, 992, 100).setAlpha(0.5);
         
@@ -32,10 +23,10 @@ class HUD extends Phaser.Scene {
         sec = 16;
         timer = setInterval( () => {
             sec--;
-            if (sec < 5 || hydralisks.countActive(true) > 5 || sec > 40) {
+            if (sec < 5 || hydralisks.countActive(true) > 6 || sec > 40) {
                 nextWaveButton.setFill('firebrick').setStroke('gold').setAlpha(0.33);
                 clickNextWave = false;
-            } else if (hydralisks.countActive(true) < 6) {
+            } else if (hydralisks.countActive(true) < 7) {
                 nextWaveButton.setFill('gold').setStroke('firebrick').setAlpha(1);
                 clickNextWave = true;
             }
@@ -47,11 +38,24 @@ class HUD extends Phaser.Scene {
                 timerDisplay.setText('');
                 min = 0;
                 sec = 46;
+                if (waveNumber % 4 === 0) {
+                    hydraliskHPIncrease += 2;
+                }
+                if (waveNumber > 1) {
+                    hydraliskHP += hydraliskHPIncrease;
+                    if (hydraliskSpeed < 100) {
+                        hydraliskSpeed += 1;
+                    }
+                    if (birthTime > 1840) {
+                        birthTime -= 72;
+                    }    
+                }
                 nextWave();
                 waveInfoText.setText(`Wave ${waveNumber}`);
                 waveNumberDisplay.setText(`Wave: ${waveNumber}`);
                 hydraliskHPDisplay.setText(`Hydralisk HP: ${hydraliskHP}`);
                 hydraliskSpeedDisplay.setText(`Hydralisk Speed: ${hydraliskSpeed}`);    
+                waveNumber++;
                 this.add.tween({
                     targets: waveInfoText,
                     ease: 'Sine.easeInOut',
@@ -147,7 +151,7 @@ class HUD extends Phaser.Scene {
 
         nextWaveButton = this.add.text(988, 572, 'Next Wave', {fontSize: '40px', fill: 'gold', fontFamily: 'Arial', stroke: 'firebrick', strokeThickness: 6})
         .setInteractive().on('pointerdown', function() {
-            if (clickNextWave && hydralisks.countActive(true) < 6) {
+            if (clickNextWave) {
                 min = 0;
                 sec = 4;
                 nextWaveButton.setFill('firebrick').setStroke('gold').setAlpha(0.33);
