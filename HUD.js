@@ -75,6 +75,22 @@ class HUD extends Phaser.Scene {
                 this.input.setDefaultCursor('url(public/assets/cursor.cur), pointer');
             }
         }, this).setScrollFactor(0).setAlpha(0.33);
+        upgradeButton = this.add.text(680, 540, `Upgrade: ${upgradeCost}`, {fontSize: '40px', fill: 'firebrick', fontFamily: 'Arial', stroke: 'gold', strokeThickness: 6})
+        .setInteractive().on('pointerdown', function() {
+            if (resources >= upgradeCost) {
+                for (let tower of headtowers.getChildren()) {
+                    tower.damage += 2;
+                }
+                towerDamage += 2;
+                resources -= upgradeCost;
+                upgradeCost++;
+                upgradeButton.setText(`Upgrade: ${upgradeCost}`).setFill('gold').setStroke('firebrick');
+                resourcesDisplay.setText(`Resources: ${resources}`);
+            }
+        }, this).setScrollFactor(0)
+        .setInteractive().on('pointerup', function() {
+            upgradeButton.setFill('firebrick').setStroke('gold');
+        }, this).setScrollFactor(0);
     }
 
     update() {

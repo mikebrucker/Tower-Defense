@@ -7,6 +7,7 @@ timerDisplay,
 timer,
 buildButton,
 demolishButton,
+upgradeButton,
 buildGraphic,
 logWorldLayer,
 waveInfoText,
@@ -17,6 +18,7 @@ hydralisks,
 deaths,
 headtowers,
 bullets,
+upgradeCost = 1,
 birthTime = 4200,
 hydralisksEscaped = 0,
 resources = 10,
@@ -91,10 +93,14 @@ function nextWave() {
         }, this);
         swarm++;
         if (swarm > 2) {
-            hydraliskHP += 16;
-            hydraliskSpeed += 4;
             waveNumber++;
-            birthTime -= 100;
+            hydraliskHP += 12;
+            if (hydraliskSpeed < 180) {
+                hydraliskSpeed += 3;
+            }
+            if (birthTime > 2500) {
+                birthTime -= 50;
+            }
             clearInterval(nextWave);
         }
     }, birthTime);
