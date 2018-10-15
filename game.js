@@ -1,32 +1,53 @@
 let controls,
 build = false,
 demolish = false,
-resourcesDisplay,
-killsDisplay,
+clickNextWave = true,
+pointerOnNav,
+
 timerDisplay,
+resourcesDisplay,
+upgradeCostDisplay,
+killsDisplay,
+hydraliskHPDisplay,
+hydraliskSpeedDisplay,
+numberOfTowersDisplay,
+waveNumberDisplay,
+towerDamageDisplay,
+hydralisksEscapedDisplay,
+
 timer,
+min,
+sec,
+
 buildButton,
 demolishButton,
 upgradeButton,
+nextWaveButton,
+
 buildGraphic,
 logWorldLayer,
+
 waveInfoText,
+countDownText,
 buildInfoText,
 hydralisksEscapedInfoText,
+
 births,
 hydralisks,
 deaths,
 headtowers,
 bullets,
+
 upgradeCost = 1,
-birthTime = 4200,
-hydralisksEscaped = 0,
 resources = 10,
-kills = 0,
+towerDamage = 10,
+numberOfTowers = 0,
 waveNumber = 1,
+kills = 0,
 hydraliskHP = 96,
 hydraliskSpeed = 72,
-towerDamage = 10;
+hydralisksEscaped = 0,
+birthTime = 4200;
 
 function nextWave() {
     let swarm = 0;
@@ -94,11 +115,11 @@ function nextWave() {
         swarm++;
         if (swarm > 2) {
             waveNumber++;
-            hydraliskHP += 12;
+            hydraliskHP += 16;
             if (hydraliskSpeed < 180) {
                 hydraliskSpeed += 3;
             }
-            if (birthTime > 2500) {
+            if (birthTime > 2200) {
                 birthTime -= 50;
             }
             clearInterval(nextWave);
@@ -312,6 +333,7 @@ class Hydralisk extends Phaser.GameObjects.Sprite {
                 hydralisksEscapedInfoText.setText(`A Hydralisk Has Escaped`)
             } else {
                 hydralisksEscapedInfoText.setText(`${hydralisksEscaped} Hydralisks Have Escaped`)
+                hydralisksEscapedDisplay.setText(`Hydralisks Escaped: ${hydralisksEscaped}`)
             }
             this.scene.add.tween({
                 targets: hydralisksEscapedInfoText,
@@ -336,6 +358,11 @@ class Hydralisk extends Phaser.GameObjects.Sprite {
             if (kills % 8 === 0 && kills != 0) {
                 resources += 1;
                 resourcesDisplay.setText(`Resources: ${resources}`)
+                if (resources >= upgradeCost) {
+                    upgradeButton.setFill('gold').setStroke('firebrick').setAlpha(1);
+                } else {
+                    upgradeButton.setFill('firebrick').setStroke('gold').setAlpha(0.33);
+                }
             }
         }
     }
@@ -402,7 +429,7 @@ class SceneGame extends Phaser.Scene {
         this.physics.add.collider(hydralisks, headtowers);
 
         this.input.on('pointerdown', function(pointer) {
-            if (build) {
+            if (build && !pointerOnNav) {
                 let x = Math.round(pointer.worldX/16),
                 y = Math.round(pointer.worldY/16);
     
@@ -410,6 +437,9 @@ class SceneGame extends Phaser.Scene {
                     if (resources > 0) {
                         headtowers.get(x*16, y*16, 'headtower')
                         .setInteractive().anims.play('headtower_do').body.setCircle(16);
+
+                        numberOfTowers++;
+                        numberOfTowersDisplay.setText(`Towers: ${numberOfTowers}`);
     
                         logWorldLayer[y][x].properties.buildable = false;
                         logWorldLayer[y-1][x].properties.buildable = false;
@@ -418,6 +448,12 @@ class SceneGame extends Phaser.Scene {
     
                         resources--;
                         resourcesDisplay.setText(`Resources: ${resources}`)
+                        if (resources >= upgradeCost) {
+                            upgradeButton.setFill('gold').setStroke('firebrick').setAlpha(1);
+                        } else {
+                            upgradeButton.setFill('firebrick').setStroke('gold').setAlpha(0.33)
+                        }            
+        
                         buildInfoText.setText('');
                         if (resources === 0) {
                             build = false;
@@ -443,11 +479,13 @@ class SceneGame extends Phaser.Scene {
         
         this.input.on('gameobjectdown', function (pointer, gameObject) {
             let demolishInfoText = this.add.text(496, 500, '', {fontSize: '40px', fill: 'firebrick', fontFamily: 'Arial', stroke: 'gold', strokeThickness: 3 }).setScrollFactor(0).setOrigin(0.5);
-            if (demolish && gameObject.name === 'tower') {
+            if (demolish && !pointerOnNav && gameObject.name === 'tower') {
                 let x = Math.round(gameObject.x/16),
                 y = Math.round(gameObject.y/16);
                 
                 gameObject.destroy();
+                numberOfTowers--;
+                numberOfTowersDisplay.setText(`Towers: ${numberOfTowers}`);
                 
                 demolishInfoText.setText(`Tower Removed at (${x*16}, ${y*16})`)
                 this.add.tween({
@@ -515,8 +553,11 @@ class SceneGame extends Phaser.Scene {
         } else {
             buildGraphic.setAlpha(0);
         }
-        if ( (pointer.x < 232 && pointer.y < 50) || (pointer.x > 680 && pointer.y < 50) ) {
+        if ( (pointer.y > 542) ) {
+            pointerOnNav = true;
             buildGraphic.setPosition(-32, -32);
+        } else {
+            pointerOnNav = false;
         }
     }
 }

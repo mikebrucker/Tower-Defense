@@ -3,19 +3,42 @@ class HUD extends Phaser.Scene {
     constructor() {
         super('HUD');
     }
-
+    // timerDisplay,
+    // resourcesDisplay,
+    // killsDisplay,
+    // hydraliskHPDisplay,
+    // hydraliskSpeedDisplay,
+    // numberOfTowersDisplay,
+    // waveNumberDisplay,
+    // towerDamageDisplay,
+    // hydralisksEscapedDisplay,
+    
     create() {
-        let buildbox = this.add.graphics(),
-        demolishbox = this.add.graphics();
+        this.add.graphics().fillStyle(0x000000).fillRect(0, 542, 992, 100).setAlpha(0.5);
         
-        buildbox.fillStyle(0x000000).lineStyle(4, 0xb22222).fillRoundedRect(4, 4, 232, 48, 8).setAlpha(0.33).strokeRoundedRect(4, 4, 232, 48, 8).setScrollFactor(0);
-        demolishbox.fillStyle(0x000000).lineStyle(4, 0xb22222).fillRoundedRect(676, 4, 312, 48, 8).setAlpha(0.33).strokeRoundedRect(676, 4, 312, 48, 8).setScrollFactor(0);
+        towerDamageDisplay = this.add.text(4, 0, `Tower Damage: ${towerDamage}`, {fontSize: '20px', fill: 'gold', fontFamily: 'Arial', stroke: 'firebrick', strokeThickness: 3}).setOrigin(0);
+        numberOfTowersDisplay = this.add.text(4, 24, `Towers: ${numberOfTowers}`, {fontSize: '20px', fill: 'gold', fontFamily: 'Arial', stroke: 'firebrick', strokeThickness: 3}).setOrigin(0);
+        waveNumberDisplay = this.add.text(4, 48, `Wave: ${waveNumber}`, {fontSize: '20px', fill: 'gold', fontFamily: 'Arial', stroke: 'firebrick', strokeThickness: 3}).setOrigin(0);
 
-        timerDisplay = this.add.text(496, 14, '', {fontSize: '20px', fill: 'firebrick', fontFamily: 'Arial', stroke: 'gold', strokeThickness: 3}).setOrigin(0.5);
-        let min = 0,
-        sec = 11;
+        resourcesDisplay = this.add.text(324, 0, `Resources: ${resources}`, {fontSize: '20px', fill: 'gold', fontFamily: 'Arial', stroke: 'firebrick', strokeThickness: 3}).setOrigin(0.5, 0);
+        timerDisplay = this.add.text(496, 0, '', {fontSize: '20px', fill: 'gold', fontFamily: 'Arial', stroke: 'firebrick', strokeThickness: 3}).setOrigin(0.5, 0);
+        killsDisplay = this.add.text(648, 0, `Kills: ${kills}`, {fontSize: '20px', fill: 'gold', fontFamily: 'Arial', stroke: 'firebrick', strokeThickness: 3}).setOrigin(0.5, 0);
+
+        hydralisksEscapedDisplay = this.add.text(988, 0, `Hydralisks Escaped: ${hydralisksEscaped}`, {fontSize: '20px', fill: 'gold', fontFamily: 'Arial', stroke: 'firebrick', strokeThickness: 3}).setOrigin(1, 0);
+        hydraliskSpeedDisplay = this.add.text(988, 24, `Hydralisk Speed: ${hydraliskSpeed}`, {fontSize: '20px', fill: 'gold', fontFamily: 'Arial', stroke: 'firebrick', strokeThickness: 3}).setOrigin(1, 0);
+        hydraliskHPDisplay = this.add.text(988, 48, `Hydralisk HP: ${hydraliskHP}`, {fontSize: '20px', fill: 'gold', fontFamily: 'Arial', stroke: 'firebrick', strokeThickness: 3}).setOrigin(1, 0);
+
+        min = 0;
+        sec = 16;
         timer = setInterval( () => {
             sec--;
+            if (sec < 5 || hydralisks.countActive(true) > 5 || sec > 40) {
+                nextWaveButton.setFill('firebrick').setStroke('gold').setAlpha(0.33);
+                clickNextWave = false;
+            } else if (hydralisks.countActive(true) < 6) {
+                nextWaveButton.setFill('gold').setStroke('firebrick').setAlpha(1);
+                clickNextWave = true;
+            }
             if (sec < 0) {
                 min--;
                 sec = 59;
@@ -23,9 +46,12 @@ class HUD extends Phaser.Scene {
             if (min < 0) {
                 timerDisplay.setText('');
                 min = 0;
-                sec = 45;
+                sec = 46;
                 nextWave();
-                waveInfoText.setText(`Wave ${waveNumber}`)
+                waveInfoText.setText(`Wave ${waveNumber}`);
+                waveNumberDisplay.setText(`Wave: ${waveNumber}`);
+                hydraliskHPDisplay.setText(`Hydralisk HP: ${hydraliskHP}`);
+                hydraliskSpeedDisplay.setText(`Hydralisk Speed: ${hydraliskSpeed}`);    
                 this.add.tween({
                     targets: waveInfoText,
                     ease: 'Sine.easeInOut',
@@ -40,15 +66,42 @@ class HUD extends Phaser.Scene {
             } else {
                 timerDisplay.setText(`${min}:${sec}`);
             }
+            if (sec > 0 && sec < 4) {
+                countDownText.setText(sec)
+                this.add.tween({
+                    targets: countDownText,
+                    ease: 'Sine.easeInOut',
+                    duration: 1500,
+                    alpha: {
+                        getStart: () => 1,
+                        getEnd: () => 0
+                    }
+                });
+            }
         }, 1000);
 
-        resourcesDisplay = this.add.text(331, 14, `Resources: ${resources}`, {fontSize: '20px', fill: 'firebrick', fontFamily: 'Arial', stroke: 'gold', strokeThickness: 3}).setOrigin(0.5);
-        killsDisplay = this.add.text(600, 14, `Kills: ${kills}`, {fontSize: '20px', fill: 'firebrick', fontFamily: 'Arial', stroke: 'gold', strokeThickness: 3}).setOrigin(0.5);
-        buildInfoText = this.add.text(496, 500, '', {fontSize: '40px', fill: 'firebrick', fontFamily: 'Arial', stroke: 'gold', strokeThickness: 3 }).setScrollFactor(0).setOrigin(0.5);
-        waveInfoText = this.add.text(496, 300, '', {fontSize: '60px', fill: 'firebrick', fontFamily: 'Arial', stroke: 'gold', strokeThickness: 3 }).setScrollFactor(0).setOrigin(0.5);
-        hydralisksEscapedInfoText = this.add.text(496, 500, '', {fontSize: '50px', fill: 'firebrick', fontFamily: 'Arial', stroke: 'gold', strokeThickness: 3 }).setScrollFactor(0).setOrigin(0.5);
+        buildInfoText = this.add.text(496, 500, '', {fontSize: '40px', fill: 'firebrick', fontFamily: 'Arial', stroke: 'gold', strokeThickness: 3 }).setOrigin(0.5);
+        waveInfoText = this.add.text(496, 300, '', {fontSize: '60px', fill: 'firebrick', fontFamily: 'Arial', stroke: 'gold', strokeThickness: 3 }).setOrigin(0.5);
+        countDownText = this.add.text(496, 300, '', {fontSize: '160px', fill: 'firebrick', fontFamily: 'Arial', stroke: 'gold', strokeThickness: 3 }).setOrigin(0.5);
+        hydralisksEscapedInfoText = this.add.text(496, 500, '', {fontSize: '50px', fill: 'firebrick', fontFamily: 'Arial', stroke: 'gold', strokeThickness: 3 }).setOrigin(0.5);
+        
+        demolishButton = this.add.text(4, 572, 'Demolish', {fontSize: '40px', fill: 'firebrick', fontFamily: 'Arial', stroke: 'gold', strokeThickness: 6})
+        .setInteractive().on('pointerdown', function() {
+            build = false;
+            demolish = !demolish;
+            buildButton.setFill('firebrick').setStroke('gold').setAlpha(0.33);
+            if (demolish) {
+                demolishButton.setFill('gold').setStroke('firebrick').setAlpha(1);
+                this.input.setDefaultCursor('url(public/assets/redcursor.cur), pointer');
+            } else {
+                demolishButton.setFill('firebrick').setStroke('gold').setAlpha(0.33);
+                this.input.setDefaultCursor('url(public/assets/cursor.cur), pointer');
+            }
+        }, this).setAlpha(0.33).setOrigin(0, 0.5);
+        
+        this.add.text(312, 572, '1', {fontSize: '30px', fill: 'firebrick', fontFamily: 'Arial', stroke: 'gold', strokeThickness: 6}).setOrigin(0.5);
 
-        buildButton = this.add.text(8, 0, 'Toggle Build', {fontSize: '40px', fill: 'firebrick', fontFamily: 'Arial', stroke: 'gold', strokeThickness: 6})
+        buildButton = this.add.text(248, 572, 'Build', {fontSize: '40px', fill: 'firebrick', fontFamily: 'Arial', stroke: 'gold', strokeThickness: 6})
         .setInteractive().on('pointerdown', function() {
             if (resources > 0) {
                 build = !build;
@@ -61,21 +114,11 @@ class HUD extends Phaser.Scene {
                     buildButton.setFill('firebrick').setStroke('gold').setAlpha(0.33);
                 }
             }
-        }, this).setScrollFactor(0).setAlpha(0.33);
-        demolishButton = this.add.text(680, 0, 'Toggle Demolish', {fontSize: '40px', fill: 'firebrick', fontFamily: 'Arial', stroke: 'gold', strokeThickness: 6})
-        .setInteractive().on('pointerdown', function() {
-            build = false;
-            demolish = !demolish;
-            buildButton.setFill('firebrick').setStroke('gold').setAlpha(0.33);
-            if (demolish) {
-                demolishButton.setFill('gold').setStroke('firebrick').setAlpha(1);
-                this.input.setDefaultCursor('url(public/assets/redcursor.cur), pointer');
-            } else {
-                demolishButton.setFill('firebrick').setStroke('gold').setAlpha(0.33);
-                this.input.setDefaultCursor('url(public/assets/cursor.cur), pointer');
-            }
-        }, this).setScrollFactor(0).setAlpha(0.33);
-        upgradeButton = this.add.text(680, 540, `Upgrade: ${upgradeCost}`, {fontSize: '40px', fill: 'firebrick', fontFamily: 'Arial', stroke: 'gold', strokeThickness: 6})
+        }, this).setAlpha(0.33).setOrigin(0.5);
+        
+        upgradeCostDisplay = this.add.text(524, 572, upgradeCost, {fontSize: '30px', fill: 'firebrick', fontFamily: 'Arial', stroke: 'gold', strokeThickness: 6}).setOrigin(0.5);
+        
+        upgradeButton = this.add.text(424, 572, 'Upgrade', {fontSize: '40px', fill: 'gold', fontFamily: 'Arial', stroke: 'firebrick', strokeThickness: 6})
         .setInteractive().on('pointerdown', function() {
             if (resources >= upgradeCost) {
                 for (let tower of headtowers.getChildren()) {
@@ -84,15 +127,32 @@ class HUD extends Phaser.Scene {
                 towerDamage += 2;
                 resources -= upgradeCost;
                 upgradeCost++;
-                upgradeButton.setText(`Upgrade: ${upgradeCost}`).setFill('gold').setStroke('firebrick');
+                upgradeCostDisplay.setText(upgradeCost)
+                upgradeButton.setFill('firebrick').setStroke('gold');
                 resourcesDisplay.setText(`Resources: ${resources}`);
+                towerDamageDisplay.setText(`Tower Damage: ${towerDamage}`);
+                if (resources === 0) {
+                    build = false;
+                    buildButton.setFill('firebrick').setStroke('gold').setAlpha(0.33);
+                }
             }
-        }, this).setScrollFactor(0)
+        }, this)
         .setInteractive().on('pointerup', function() {
-            upgradeButton.setFill('firebrick').setStroke('gold');
-        }, this).setScrollFactor(0);
-    }
+            if (resources >= upgradeCost) {
+                upgradeButton.setFill('gold').setStroke('firebrick').setAlpha(1);
+            } else {
+                upgradeButton.setFill('firebrick').setStroke('gold').setAlpha(0.33)
+            }
+        }, this).setOrigin(0.5);
 
-    update() {
+        nextWaveButton = this.add.text(988, 572, 'Next Wave', {fontSize: '40px', fill: 'gold', fontFamily: 'Arial', stroke: 'firebrick', strokeThickness: 6})
+        .setInteractive().on('pointerdown', function() {
+            if (clickNextWave && hydralisks.countActive(true) < 6) {
+                min = 0;
+                sec = 4;
+                nextWaveButton.setFill('firebrick').setStroke('gold').setAlpha(0.33);
+            }
+            clickNextWave = false;
+        }, this).setOrigin(1, 0.5);
     }
 }

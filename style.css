@@ -1,29 +1,47 @@
+* {
+    box-sizing: border-box;
+}
+
 body {
     background: linear-gradient(to right, white, yellow, red, rgb(192, 0, 0), maroon, maroon, rgb(192, 0, 0), red, yellow, white);
     margin: 0 auto;
     text-align: center;
     font-family: Verdana, Geneva, Tahoma, sans-serif;
-    font-size: 50px;
+    font-size: 0;
     font-weight: bolder;
-    color: #b22222;
+    color: black;
+    max-width: 1008px;
 }
 
-.block {
-    display: block;
-}
-
-#gameContainer {
+#gameContainer, #instructions {
     display: inline-block;
-    border: 5px solid firebrick;
-    border-bottom: none;
-    background: #b22222;
+    border: 8px solid firebrick;
     padding: 0;
     margin: 0;
 }
 
+#gameContainer {
+    border-bottom: 1px;
+    background: #b22222;
+}
+
+.instructions {
+    -webkit-text-stroke-width: 2px;
+    -webkit-text-stroke-color: black;
+    -webkit-text-fill-color: white;
+    font-size: 28px;
+    text-align: left;
+}
+
+#instructions {
+    display: inline-block;
+    padding: 10px;
+    width: 100%;
+}
+
 footer {
-    color: black;
-    -webkit-text-fill-color: rgba(178, 34, 34, 0.2);
     -webkit-text-stroke-width: 1px;
     -webkit-text-stroke-color: gold;
+    -webkit-text-fill-color: rgba(178, 34, 34, 0.2);
+    font-size: 50px;
 }
