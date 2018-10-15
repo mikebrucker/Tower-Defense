@@ -1,4 +1,5 @@
 let controls,
+gameOver = false,
 build = false,
 demolish = false,
 clickNextWave = true,
@@ -15,6 +16,7 @@ waveNumberDisplay,
 towerDamageDisplay,
 hydralisksEscapedDisplay,
 
+nextWaveInterval,
 timer,
 min,
 sec,
@@ -32,6 +34,7 @@ waveInfoText,
 countDownText,
 buildInfoText,
 hydralisksEscapedInfoText,
+gameOverText,
 
 births,
 hydralisks,
@@ -89,7 +92,7 @@ function nextWave() {
         hydra.follower.t = 196/3744;
         birth6.destroy();
     }, this);
-    let nextWave = setInterval( () => {
+    nextWaveInterval = setInterval( () => {
         let birth1 = births.create(16, 512, 'hydralisk');
         birth1.anims.play('hydra_birth').on('animationcomplete', () => {
             let hydra = hydralisks.get(16, 512, 'hydralisk');
@@ -128,7 +131,7 @@ function nextWave() {
         }, this);
         swarm++;
         if (swarm > 2) {
-            clearInterval(nextWave);
+            clearInterval(nextWaveInterval);
         }
     }, birthTime);
 }
@@ -274,7 +277,7 @@ class Hydralisk extends Phaser.GameObjects.Sprite {
             //     }
             // } else {
                 this.anims.play('hydra_side', true).setFlipX(true);
-            // }
+            }
         } else {
             if (this.follower.vec.y > prevY) {
                 this.anims.play('hydra_down', true);
@@ -491,6 +494,7 @@ class SceneGame extends Phaser.Scene {
         Phaser.Actions.Call(bullets.getChildren(), function(bullet) {
             this.children.bringToTop(bullet);
         }, this);
+        this.children.bringToTop(gameOverText);
     
         controls.update(delta);
         if (this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ONE).isDown) {
@@ -534,6 +538,20 @@ class SceneGame extends Phaser.Scene {
         } else {
             pointerOnNav = false;
         }
+
+        if (hydralisksEscaped > 19 && !gameOver) {
+            gameOver = true;
+            this.scene.setVisible(false, 'HUD');
+            gameOverText = this.add.text(496, 300, 'Mission Failed', {fontSize: '60px', fill: 'firebrick', fontFamily: 'Arial', stroke: 'gold', strokeThickness: 3 }).setOrigin(0.5).setScrollFactor(0);
+            this.cameras.main.fade(5000)
+            .on('camerafadeoutcomplete', function() {
+                clearInterval(timer);
+                clearInterval(nextWave);
+                this.scene.stop('HUD')
+                this.scene.start('reset');
+            }, this);
+            return;
+        }
     }
 }
 
@@ -549,7 +567,7 @@ const config = {
             gravity: { y: 0 }
         }
     },
-    scene: [ BootGame, SceneGame, HUD ]
+    scene: [ BootGame, Reset, SceneGame, HUD ]
 };
 const game = new Phaser.Game(config);
 
