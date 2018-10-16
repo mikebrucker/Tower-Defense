@@ -5,7 +5,6 @@ class Reset extends Phaser.Scene {
     }
 
     create() {
-
         controls,
         gameOver = false,
         build = false,

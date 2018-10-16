@@ -5,8 +5,14 @@ class HUD extends Phaser.Scene {
     }
 
     create() {
-        this.add.graphics().fillStyle(0x000000).fillRect(0, 542, 992, 100).setAlpha(0.5);
-        
+        let graphics = this.add.graphics();
+        graphics.fillStyle(0x000000).fillRect(0, 542, 992, 100).setAlpha(0.5);
+        let line = this.add.graphics();
+        line.fillStyle(0xB22222, 1).fillRect(0, 542, 992, 4);
+        let topline = this.add.graphics();
+        topline.fillStyle(0xFF4848, 1).fillRect(0, 541, 992, 1);
+        topline.fillStyle(0xFF4848, 1).fillRect(0, 546, 992, 1);
+
         towerDamageDisplay = this.add.text(4, 0, `Tower Damage: ${towerDamage}`, {fontSize: '20px', fill: 'gold', fontFamily: 'Arial', stroke: 'firebrick', strokeThickness: 3}).setOrigin(0);
         numberOfTowersDisplay = this.add.text(4, 24, `Towers: ${numberOfTowers}`, {fontSize: '20px', fill: 'gold', fontFamily: 'Arial', stroke: 'firebrick', strokeThickness: 3}).setOrigin(0);
         waveNumberDisplay = this.add.text(4, 48, `Wave: ${waveNumber}`, {fontSize: '20px', fill: 'gold', fontFamily: 'Arial', stroke: 'firebrick', strokeThickness: 3}).setOrigin(0);

@@ -59,36 +59,42 @@ function nextWave() {
     let birth1 = births.create(16, 512, 'hydralisk');
     birth1.anims.play('hydra_birth').on('animationcomplete', () => {
         let hydra = hydralisks.get(16, 512, 'hydralisk')
+        hydra.body.setCircle(16, 6, 13)
         hydra.follower.t = 16/3744;
         birth1.destroy();
     }, this);
     let birth2 = births.create(52, 512, 'hydralisk');
     birth2.anims.play('hydra_birth').on('animationcomplete', () => {
         let hydra = hydralisks.get(52, 512, 'hydralisk')
+        hydra.body.setCircle(16, 6, 13)
         hydra.follower.t = 52/3744;
         birth2.destroy();
     }, this);
     let birth3 = births.create(88, 512, 'hydralisk');
     birth3.anims.play('hydra_birth').on('animationcomplete', () => {
         let hydra = hydralisks.get(88, 512, 'hydralisk')
+        hydra.body.setCircle(16, 6, 13)
         hydra.follower.t = 88/3744;
         birth3.destroy();
     }, this);
     let birth4 = births.create(124, 512, 'hydralisk');
     birth4.anims.play('hydra_birth').on('animationcomplete', () => {
         let hydra = hydralisks.get(124, 512, 'hydralisk')
+        hydra.body.setCircle(16, 6, 13)
         hydra.follower.t = 124/3744;
         birth4.destroy();
     }, this);
     let birth5 = births.create(160, 512, 'hydralisk');
     birth5.anims.play('hydra_birth').on('animationcomplete', () => {
         let hydra = hydralisks.get(160, 512, 'hydralisk')
+        hydra.body.setCircle(16, 6, 13)
         hydra.follower.t = 160/3744;
         birth5.destroy();
     }, this);
     let birth6 = births.create(196, 512, 'hydralisk');
     birth6.anims.play('hydra_birth').on('animationcomplete', () => {
         let hydra = hydralisks.get(196, 512, 'hydralisk')
+        hydra.body.setCircle(16, 6, 13)
         hydra.follower.t = 196/3744;
         birth6.destroy();
     }, this);
@@ -96,36 +102,42 @@ function nextWave() {
         let birth1 = births.create(16, 512, 'hydralisk');
         birth1.anims.play('hydra_birth').on('animationcomplete', () => {
             let hydra = hydralisks.get(16, 512, 'hydralisk');
+            hydra.body.setCircle(16, 6, 13)
             hydra.follower.t = 16/3744;
             birth1.destroy();
         }, this);
         let birth2 = births.create(52, 512, 'hydralisk');
         birth2.anims.play('hydra_birth').on('animationcomplete', () => {
             let hydra = hydralisks.get(52, 512, 'hydralisk');
+            hydra.body.setCircle(16, 6, 13)
             hydra.follower.t = 52/3744;
             birth2.destroy();
         }, this);
         let birth3 = births.create(88, 512, 'hydralisk');
         birth3.anims.play('hydra_birth').on('animationcomplete', () => {
             let hydra = hydralisks.get(88, 512, 'hydralisk');
+            hydra.body.setCircle(16, 6, 13)
             hydra.follower.t = 88/3744;
             birth3.destroy();
         }, this);
         let birth4 = births.create(124, 512, 'hydralisk');
         birth4.anims.play('hydra_birth').on('animationcomplete', () => {
             let hydra = hydralisks.get(124, 512, 'hydralisk');
+            hydra.body.setCircle(16, 6, 13)
             hydra.follower.t = 124/3744;
             birth4.destroy();
         }, this);
         let birth5 = births.create(160, 512, 'hydralisk');
         birth5.anims.play('hydra_birth').on('animationcomplete', () => {
             let hydra = hydralisks.get(160, 512, 'hydralisk');
+            hydra.body.setCircle(16, 6, 13)
             hydra.follower.t = 160/3744;
             birth5.destroy();
         }, this);
         let birth6 = births.create(196, 512, 'hydralisk');
         birth6.anims.play('hydra_birth').on('animationcomplete', () => {
             let hydra = hydralisks.get(196, 512, 'hydralisk');
+            hydra.body.setCircle(16, 6, 13)
             hydra.follower.t = 196/3744;
             birth6.destroy();
         }, this);
@@ -161,7 +173,25 @@ class Tower extends Phaser.GameObjects.Sprite {
         }
         if (!this.target || !this.target.active || Phaser.Math.Distance.Between(this.x, this.y, this.target.x, this.target.y) >= this.range) {
             this.target = this.getEnemy(this.range);
-        } 
+        }
+        let angle = Phaser.Math.Angle.Between(this.x, this.y, this.target.x, this.target.y);
+        if (angle > .875 * Math.PI || angle <= -.875 * Math.PI) {
+            this.anims.play('headtower_le', true);
+        } else if (angle > .625 * Math.PI && angle <= .875 * Math.PI) {
+            this.anims.play('headtower_dl', true);
+        } else if (angle > .375 * Math.PI && angle <= .625 * Math.PI) {
+            this.anims.play('headtower_do', true);
+        } else if (angle > .125 * Math.PI && angle <= .375 * Math.PI) {
+            this.anims.play('headtower_dr', true);
+        } else if (angle <= .125 * Math.PI && angle > -.125 * Math.PI) {
+            this.anims.play('headtower_ri', true);
+        } else if (angle <= -.125 * Math.PI && angle > -.375 * Math.PI) {
+            this.anims.play('headtower_ur', true);
+        } else if (angle <= -.375 * Math.PI && angle > -.625 * Math.PI) {
+            this.anims.play('headtower_up', true);
+        } else if (angle <= -.625 * Math.PI && angle > -.875 * Math.PI) {
+            this.anims.play('headtower_ul', true);
+        }
     }
     
     fire() {
@@ -173,11 +203,11 @@ class Tower extends Phaser.GameObjects.Sprite {
         }
     }
 
-    getEnemy(range) {
+    getEnemy() {
         let enemyUnits = hydralisks.getChildren();
         let enemiesInRange = [];
         for (let i = 0; i < enemyUnits.length; i++) {       
-            if (enemyUnits[i].active && Phaser.Math.Distance.Between(this.x, this.y, enemyUnits[i].x, enemyUnits[i].y) <= range) {
+            if (enemyUnits[i].active && Phaser.Math.Distance.Between(this.x, this.y, enemyUnits[i].x, enemyUnits[i].y) <= this.range) {
                 enemiesInRange.push([Phaser.Math.Distance.Between(this.x, this.y, enemyUnits[i].x, enemyUnits[i].y), enemyUnits[i]]);
             }
         }
@@ -206,16 +236,12 @@ class Bullet extends Phaser.GameObjects.Image {
         this.scene.physics.add.overlap(this.target, this, damageHydralisks);
         this.x += this.dx * (this.speed * delta);
         this.y += this.dy * (this.speed * delta);
-        this.fireMe();
+        let angle = Phaser.Math.Angle.Between(this.x, this.y, this.target.x, this.target.y);
+        this.dx = Math.cos(angle);
+        this.dy = Math.sin(angle);
         if (!this.target.active || Phaser.Math.Distance.Between(this.startX, this.startY, this.target.x, this.target.y) >= this.range || this.x < 0 || this.y < 0 || this.x > 1919 || this.y > 799) {
             this.destroy();
         }
-    }
-
-    fireMe() {
-        let angle = Phaser.Math.Angle.Between(this.x, this.y, this.target.x, this.target.y);
-        this.dx = Math.cos(angle)
-        this.dy = Math.sin(angle)
     }
 };
 
@@ -294,8 +320,8 @@ class Hydralisk extends Phaser.GameObjects.Sprite {
                 hydralisksEscapedInfoText.setText(`A Hydralisk Has Escaped`)
             } else {
                 hydralisksEscapedInfoText.setText(`${hydralisksEscaped} Hydralisks Have Escaped`)
-                hydralisksEscapedDisplay.setText(`Hydralisks Escaped: ${hydralisksEscaped}`)
             }
+            hydralisksEscapedDisplay.setText(`Hydralisks Escaped: ${hydralisksEscaped}`)
             this.scene.add.tween({
                 targets: hydralisksEscapedInfoText,
                 ease: 'Sine.easeInOut',
