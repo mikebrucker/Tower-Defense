@@ -18,6 +18,8 @@ class Reset extends Phaser.Scene {
         
         controls,
         gameOver = false,
+        musicOn = true,
+        sfxOn = true,
         build = false,
         demolish = false,
         clickNextWave = true,
@@ -43,6 +45,8 @@ class Reset extends Phaser.Scene {
         demolishButton,
         upgradeButton,
         nextWaveButton,
+        musicButton,
+        sfxButton,
         
         buildGraphic,
         logWorldLayer,

@@ -11,6 +11,8 @@ game_track,
 
 controls,
 gameOver = false,
+musicOn = true,
+sfxOn = true,
 build = false,
 demolish = false,
 clickNextWave = true,
@@ -36,6 +38,8 @@ buildButton,
 demolishButton,
 upgradeButton,
 nextWaveButton,
+musicButton,
+sfxButton,
 
 buildGraphic,
 logWorldLayer,
@@ -545,7 +549,6 @@ class GameScene extends Phaser.Scene {
         Phaser.Actions.Call(bullets.getChildren(), function(bullet) {
             this.children.bringToTop(bullet);
         }, this);
-        this.children.bringToTop(gameOverText);
     
         controls.update(delta);
         if (this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ONE).isDown) {
@@ -563,7 +566,7 @@ class GameScene extends Phaser.Scene {
             this.cameras.main.zoom = this.cameras.main.zoom += 0.05;
             }
         } else if (this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.NINE).isDown) {
-            if (this.cameras.main.displayHeight < 756) {
+            if (this.cameras.main.displayHeight < 800) {
                 this.cameras.main.zoom = this.cameras.main.zoom -= 0.05;
             }
         }
@@ -583,7 +586,7 @@ class GameScene extends Phaser.Scene {
         } else {
             buildGraphic.setAlpha(0);
         }
-        if ( (pointer.y > 542) ) {
+        if (pointer.y > 542) {
             pointerOnNav = true;
             buildGraphic.setPosition(-32, -32);
         } else {
@@ -598,10 +601,12 @@ class GameScene extends Phaser.Scene {
             clearInterval(timer);
             clearInterval(nextWaveInterval);
 
+            gameOver = true;
+
             this.scene.launch('GameOver');
             this.scene.setVisible(false, 'HUD');
-            gameOver = true;
             this.add.text(496, 300, ' ').setScrollFactor(0);
+
             this.cameras.main.fade(4000)
             .on('camerafadeoutcomplete', function() {
                 setTimeout( () => {

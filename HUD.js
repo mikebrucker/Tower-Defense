@@ -44,9 +44,9 @@ class HUD extends Phaser.Scene {
             }
         }, this).setAlpha(0.33).setOrigin(0, 0.5);
         
-        this.add.text(312, 575, '1', {fontSize: '30px', fill: 'firebrick', fontFamily: 'Arial', stroke: 'gold', strokeThickness: 6}).setOrigin(0.5);
+        this.add.text(316, 575, '1', {fontSize: '30px', fill: 'firebrick', fontFamily: 'Arial', stroke: 'gold', strokeThickness: 6}).setOrigin(0.5);
         
-        buildButton = this.add.text(248, 573, 'Build', {fontSize: '40px', fill: 'firebrick', fontFamily: 'Arial', stroke: 'gold', strokeThickness: 6})
+        buildButton = this.add.text(252, 573, 'Build', {fontSize: '40px', fill: 'firebrick', fontFamily: 'Arial', stroke: 'gold', strokeThickness: 6})
         .setInteractive().on('pointerdown', function() {
             if (resources > 0) {
                 build = !build;
@@ -91,6 +91,34 @@ class HUD extends Phaser.Scene {
             }
         }, this).setOrigin(0.5);
         
+        musicButton = this.add.text(666, 562, 'Music', {fontSize: '18px', fill: 'gold', fontFamily: 'Arial', stroke: 'firebrick', strokeThickness: 3})
+        .setInteractive().on('pointerdown', function() {
+            musicOn = !musicOn;
+            if (musicOn) {
+                game_track.resume();
+                musicButton.setFill('gold').setStroke('firebrick').setAlpha(1);
+            } else {
+                musicButton.setFill('firebrick').setStroke('gold').setAlpha(0.33);
+                game_track.pause();
+            }
+        }, this).setOrigin(0.5);
+
+        sfxButton = this.add.text(666, 582, 'Sound FX', {fontSize: '18px', fill: 'gold', fontFamily: 'Arial', stroke: 'firebrick', strokeThickness: 3})
+        .setInteractive().on('pointerdown', function() {
+            sfxOn = !sfxOn;
+            if (sfxOn) {
+                sfx_config.mute = false;
+                sfxButton.setFill('gold').setStroke('firebrick').setAlpha(1);
+            } else {
+                this.sound.pauseAll();
+                if (musicOn) {
+                    game_track.resume();
+                }
+                sfx_config.mute = true;
+                sfxButton.setFill('firebrick').setStroke('gold').setAlpha(0.33);
+            }
+        }, this).setOrigin(0.5);
+
         nextWaveButton = this.add.text(988, 573, 'Next Wave', {fontSize: '40px', fill: 'gold', fontFamily: 'Arial', stroke: 'firebrick', strokeThickness: 6})
         .setInteractive().on('pointerdown', function() {
             if (clickNextWave) {
@@ -153,7 +181,7 @@ class HUD extends Phaser.Scene {
                 timerDisplay.setText(`${min}:${sec}`);
             }
             if (sec > 0 && sec < 4) {
-                this.sound.play('beep');
+                this.sound.play('beep', sfx_config);
                 countDownText.setText(sec)
                 this.add.tween({
                     targets: countDownText,
