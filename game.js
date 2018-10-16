@@ -594,28 +594,14 @@ class GameScene extends Phaser.Scene {
         }
 
         if (!gameOver) {
-            if (hydralisksEscaped > 19) {
-                this.scene.launch('GameOver');
+            if ( (waveNumber > 30 && sec < 40 && hydralisks.countActive(true) === 0) || hydralisksEscaped > 19) {
                 gameOver = true;
-                this.sound.play('lose', sfx_config);
-                sfx_config.mute = true;
-                game_track.stop();
-                clearInterval(timer);
-                clearInterval(nextWaveInterval);
-                this.scene.setVisible(false, 'HUD');
-                this.add.text(496, 300, ' ').setScrollFactor(0);
-                this.cameras.main.fade(4000)
-                .on('camerafadeoutcomplete', function() {
-                    setTimeout( () => {
-                        this.scene.stop('GameOver')
-                        this.scene.stop('HUD')
-                        this.scene.start('Reset');
-                    }, 2000);
-                }, this);
-                return;
-            } else if (waveNumber > 30 && sec < 40 && hydralisks.countActive(true) === 0) {
                 this.scene.launch('GameOver');
-                gameOver = true;
+                if (hydralisksEscaped > 19) {
+                    this.sound.play('lose', sfx_config);
+                } else {
+                    this.sound.play('victory', sfx_config);
+                }
                 sfx_config.mute = true;
                 game_track.stop();
                 clearInterval(timer);
@@ -644,7 +630,7 @@ class GameOver extends Phaser.Scene {
     
     create() {
         gameOverText = this.add.text(496, 300, '', {fontSize: '60px', fill: 'firebrick', fontFamily: 'Arial', stroke: 'gold', strokeThickness: 3 }).setOrigin(0.5).setScrollFactor(0);
-        if (hydralisksEscaped > 20) {
+        if (hydralisksEscaped > 19) {
             gameOverText.setText('You failed to achieve victory!');
         } else {
             gameOverText.setText('You survived all 30 waves!');

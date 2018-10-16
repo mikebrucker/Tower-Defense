@@ -41,6 +41,7 @@ class BootGame extends Phaser.Scene {
         this.load.audio('demolish_tower', 'public/audio/demolish_tower.ogg');
         this.load.audio('beep', 'public/audio/beep.ogg');
         this.load.audio('egg', 'public/audio/egg.ogg');
+        this.load.audio('victory', 'public/audio/victory.ogg');
         this.load.audio('lose', 'public/audio/lose.ogg');
         this.load.audio('upgrade', 'public/audio/upgrade.ogg');
         this.load.audio('error', 'public/audio/error.ogg');
