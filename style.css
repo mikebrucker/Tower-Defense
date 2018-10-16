@@ -2,27 +2,30 @@
     box-sizing: border-box;
 }
 
+html, #gameContainer {
+    background: firebrick;
+}
+
 body {
     background: linear-gradient(to right, yellow, red, firebrick, maroon, maroon, rgb(192, 0, 0), red, yellow);
-    margin: 0 auto;
     text-align: center;
     font-family: Verdana, Geneva, Tahoma, sans-serif;
     font-size: 0;
     font-weight: bolder;
     color: black;
-    max-width: 1008px;
+}
+body, #gameContainer, #instructions {
+    margin: 0 auto;
 }
 
 #gameContainer, #instructions {
     display: inline-block;
     border: 8px solid firebrick;
     padding: 0;
-    margin: 0;
 }
 
 #gameContainer {
     border-bottom: 1px;
-    background: firebrick;
 }
 
 .instructions {
@@ -34,7 +37,7 @@ body {
 }
 
 #instructions {
-    display: inline-block;
+    max-width: 1008px;
     padding: 10px;
     width: 100%;
 }
