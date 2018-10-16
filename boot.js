@@ -1,7 +1,7 @@
 class BootGame extends Phaser.Scene {
 
     constructor() {
-        super({ key: 'bootGame', active: true });
+        super({ key: 'BootGame', active: true });
     }
 
     preload() {
@@ -24,7 +24,7 @@ class BootGame extends Phaser.Scene {
         });
         
         this.load.on('complete', function() {
-            this.scene.start('sceneGame');
+            this.scene.start('GameScene');
         }, this);
 
         this.load.tilemapTiledJSON('map', 'public/images/sunken_defense_path.json');
@@ -34,6 +34,18 @@ class BootGame extends Phaser.Scene {
         this.load.atlas('headtower', 'public/images/headtower.png', 'public/images/headtower.json');
         this.load.atlas('hydralisk', 'public/images/hydralisk.png', 'public/images/hydralisk.json');
         this.load.atlas('bullet', 'public/images/bullet.png', 'public/images/bullet.json');
+        this.load.audio('birth', 'public/audio/birth.ogg');
+        this.load.audio('hydra_death', 'public/audio/hydra_death.ogg');
+        this.load.audio('bullet', 'public/audio/bullet.ogg');
+        this.load.audio('build_tower', 'public/audio/build_tower.ogg');
+        this.load.audio('demolish_tower', 'public/audio/demolish_tower.ogg');
+        this.load.audio('beep', 'public/audio/beep.ogg');
+        this.load.audio('egg', 'public/audio/egg.ogg');
+        this.load.audio('lose', 'public/audio/lose.ogg');
+        this.load.audio('upgrade', 'public/audio/upgrade.ogg');
+        this.load.audio('error', 'public/audio/error.ogg');
+        this.load.audio('escape', 'public/audio/escape.ogg');
+        this.load.audio('game_track', 'public/audio/battle.wav');
     }
 
     create() {

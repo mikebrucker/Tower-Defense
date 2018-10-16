@@ -30,7 +30,7 @@ class HUD extends Phaser.Scene {
         countDownText = this.add.text(496, 300, '', {fontSize: '160px', fill: 'firebrick', fontFamily: 'Arial', stroke: 'gold', strokeThickness: 3 }).setOrigin(0.5);
         hydralisksEscapedInfoText = this.add.text(496, 500, '', {fontSize: '50px', fill: 'firebrick', fontFamily: 'Arial', stroke: 'gold', strokeThickness: 3 }).setOrigin(0.5);
         
-        demolishButton = this.add.text(4, 572, 'Demolish', {fontSize: '40px', fill: 'firebrick', fontFamily: 'Arial', stroke: 'gold', strokeThickness: 6})
+        demolishButton = this.add.text(4, 573, 'Demolish', {fontSize: '40px', fill: 'firebrick', fontFamily: 'Arial', stroke: 'gold', strokeThickness: 6})
         .setInteractive().on('pointerdown', function() {
             build = false;
             demolish = !demolish;
@@ -44,9 +44,9 @@ class HUD extends Phaser.Scene {
             }
         }, this).setAlpha(0.33).setOrigin(0, 0.5);
         
-        this.add.text(312, 572, '1', {fontSize: '30px', fill: 'firebrick', fontFamily: 'Arial', stroke: 'gold', strokeThickness: 6}).setOrigin(0.5);
+        this.add.text(312, 575, '1', {fontSize: '30px', fill: 'firebrick', fontFamily: 'Arial', stroke: 'gold', strokeThickness: 6}).setOrigin(0.5);
         
-        buildButton = this.add.text(248, 572, 'Build', {fontSize: '40px', fill: 'firebrick', fontFamily: 'Arial', stroke: 'gold', strokeThickness: 6})
+        buildButton = this.add.text(248, 573, 'Build', {fontSize: '40px', fill: 'firebrick', fontFamily: 'Arial', stroke: 'gold', strokeThickness: 6})
         .setInteractive().on('pointerdown', function() {
             if (resources > 0) {
                 build = !build;
@@ -61,15 +61,16 @@ class HUD extends Phaser.Scene {
             }
         }, this).setAlpha(0.33).setOrigin(0.5);
         
-        upgradeCostDisplay = this.add.text(524, 572, upgradeCost, {fontSize: '30px', fill: 'firebrick', fontFamily: 'Arial', stroke: 'gold', strokeThickness: 6}).setOrigin(0.5);
+        upgradeCostDisplay = this.add.text(524, 575, upgradeCost, {fontSize: '30px', fill: 'firebrick', fontFamily: 'Arial', stroke: 'gold', strokeThickness: 6}).setOrigin(0.5);
         
-        upgradeButton = this.add.text(424, 572, 'Upgrade', {fontSize: '40px', fill: 'gold', fontFamily: 'Arial', stroke: 'firebrick', strokeThickness: 6})
+        upgradeButton = this.add.text(424, 573, 'Upgrade', {fontSize: '40px', fill: 'gold', fontFamily: 'Arial', stroke: 'firebrick', strokeThickness: 6})
         .setInteractive().on('pointerdown', function() {
             if (resources >= upgradeCost) {
                 for (let tower of headtowers.getChildren()) {
                     tower.damage += 2;
                 }
                 towerDamage += 2;
+                this.sound.play('upgrade', sfx_config);
                 resources -= upgradeCost;
                 upgradeCost++;
                 upgradeCostDisplay.setText(upgradeCost)
@@ -90,7 +91,7 @@ class HUD extends Phaser.Scene {
             }
         }, this).setOrigin(0.5);
         
-        nextWaveButton = this.add.text(988, 572, 'Next Wave', {fontSize: '40px', fill: 'gold', fontFamily: 'Arial', stroke: 'firebrick', strokeThickness: 6})
+        nextWaveButton = this.add.text(988, 573, 'Next Wave', {fontSize: '40px', fill: 'gold', fontFamily: 'Arial', stroke: 'firebrick', strokeThickness: 6})
         .setInteractive().on('pointerdown', function() {
             if (clickNextWave) {
                 min = 0;
@@ -152,6 +153,7 @@ class HUD extends Phaser.Scene {
                 timerDisplay.setText(`${min}:${sec}`);
             }
             if (sec > 0 && sec < 4) {
+                this.sound.play('beep');
                 countDownText.setText(sec)
                 this.add.tween({
                     targets: countDownText,

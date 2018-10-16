@@ -1,10 +1,21 @@
 class Reset extends Phaser.Scene {
     
     constructor() {
-        super('reset');
+        super('Reset');
     }
 
     create() {
+        sfx_config = {
+            mute: false,
+            loop: false,
+        },
+        music_config = {
+            mute: false,
+            loop: true,
+            volume: 0.8,
+        },
+        game_track,
+        
         controls,
         gameOver = false,
         build = false,
@@ -60,7 +71,7 @@ class Reset extends Phaser.Scene {
         hydraliskSpeed = 40,
         hydralisksEscaped = 0,
         birthTime = 3496;
-
-        this.scene.start('sceneGame');
+        
+        this.scene.start('GameScene');
     }
 }

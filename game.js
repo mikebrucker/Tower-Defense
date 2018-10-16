@@ -1,4 +1,15 @@
-let controls,
+let sfx_config = {
+    mute: false,
+    loop: false,
+},
+music_config = {
+    mute: false,
+    loop: true,
+    volume: 0.8,
+},
+game_track,
+
+controls,
 gameOver = false,
 build = false,
 demolish = false,
@@ -57,7 +68,9 @@ birthTime = 3496;
 function nextWave() {
     let swarm = 0;
     let birth1 = births.create(16, 512, 'hydralisk');
+    game.sound.play('egg', sfx_config);
     birth1.anims.play('hydra_birth').on('animationcomplete', () => {
+        game.sound.play('birth', sfx_config);
         let hydra = hydralisks.get(16, 512, 'hydralisk')
         hydra.body.setCircle(16, 6, 13)
         hydra.follower.t = 16/3744;
@@ -100,7 +113,9 @@ function nextWave() {
     }, this);
     nextWaveInterval = setInterval( () => {
         let birth1 = births.create(16, 512, 'hydralisk');
+        game.sound.play('egg', sfx_config);
         birth1.anims.play('hydra_birth').on('animationcomplete', () => {
+            game.sound.play('birth', sfx_config);
             let hydra = hydralisks.get(16, 512, 'hydralisk');
             hydra.body.setCircle(16, 6, 13)
             hydra.follower.t = 16/3744;
@@ -170,32 +185,33 @@ class Tower extends Phaser.GameObjects.Sprite {
         if (time > this.timeToShoot && this.target.active) {      
             this.fire();          
             this.timeToShoot = time + 1000;
+            let angle = Phaser.Math.Angle.Between(this.x, this.y, this.target.x, this.target.y);
+            if (angle > .875 * Math.PI || angle <= -.875 * Math.PI) {
+                this.anims.play('headtower_le', true);
+            } else if (angle > .625 * Math.PI && angle <= .875 * Math.PI) {
+                this.anims.play('headtower_dl', true);
+            } else if (angle > .375 * Math.PI && angle <= .625 * Math.PI) {
+                this.anims.play('headtower_do', true);
+            } else if (angle > .125 * Math.PI && angle <= .375 * Math.PI) {
+                this.anims.play('headtower_dr', true);
+            } else if (angle <= .125 * Math.PI && angle > -.125 * Math.PI) {
+                this.anims.play('headtower_ri', true);
+            } else if (angle <= -.125 * Math.PI && angle > -.375 * Math.PI) {
+                this.anims.play('headtower_ur', true);
+            } else if (angle <= -.375 * Math.PI && angle > -.625 * Math.PI) {
+                this.anims.play('headtower_up', true);
+            } else if (angle <= -.625 * Math.PI && angle > -.875 * Math.PI) {
+                this.anims.play('headtower_ul', true);
+            }
         }
         if (!this.target || !this.target.active || Phaser.Math.Distance.Between(this.x, this.y, this.target.x, this.target.y) >= this.range) {
             this.target = this.getEnemy(this.range);
-        }
-        let angle = Phaser.Math.Angle.Between(this.x, this.y, this.target.x, this.target.y);
-        if (angle > .875 * Math.PI || angle <= -.875 * Math.PI) {
-            this.anims.play('headtower_le', true);
-        } else if (angle > .625 * Math.PI && angle <= .875 * Math.PI) {
-            this.anims.play('headtower_dl', true);
-        } else if (angle > .375 * Math.PI && angle <= .625 * Math.PI) {
-            this.anims.play('headtower_do', true);
-        } else if (angle > .125 * Math.PI && angle <= .375 * Math.PI) {
-            this.anims.play('headtower_dr', true);
-        } else if (angle <= .125 * Math.PI && angle > -.125 * Math.PI) {
-            this.anims.play('headtower_ri', true);
-        } else if (angle <= -.125 * Math.PI && angle > -.375 * Math.PI) {
-            this.anims.play('headtower_ur', true);
-        } else if (angle <= -.375 * Math.PI && angle > -.625 * Math.PI) {
-            this.anims.play('headtower_up', true);
-        } else if (angle <= -.625 * Math.PI && angle > -.875 * Math.PI) {
-            this.anims.play('headtower_ul', true);
         }
     }
     
     fire() {
         if (this.target.active) {
+            game.sound.play('bullet', sfx_config);
             let bullet = bullets.get(this.x, this.y, 'bullet_single', 0);
             bullet.body.setCircle(2);
             bullet.target = this.target;
@@ -331,6 +347,7 @@ class Hydralisk extends Phaser.GameObjects.Sprite {
                     getEnd: () => 0
                 }
             });
+            game.sound.play('escape', sfx_config);
             this.destroy();
         }
     }
@@ -339,6 +356,7 @@ class Hydralisk extends Phaser.GameObjects.Sprite {
         this.hp -= damage;
         if (this.hp <= 0) {
             this.deathAnimation(this.x, this.y);
+            game.sound.play('hydra_death', sfx_config);
             this.destroy();
             kills++;
             killsDisplay.setText(`Kills: ${kills}`)
@@ -364,13 +382,16 @@ class Hydralisk extends Phaser.GameObjects.Sprite {
     }
 }
 
-class SceneGame extends Phaser.Scene {
+class GameScene extends Phaser.Scene {
     
     constructor() {
-        super('sceneGame');
+        super('GameScene');
     }
     
     create() {
+        game_track = this.sound.add('game_track', music_config);
+        game_track.play();
+
         this.scene.launch('HUD');
         this.input.setDefaultCursor('url(public/assets/cursor.cur), pointer')
         
@@ -441,6 +462,7 @@ class SceneGame extends Phaser.Scene {
                     if (resources > 0) {
                         headtowers.get(x*16, y*16, 'headtower')
                         .setInteractive().anims.play('headtower_do').body.setCircle(16);
+                        this.sound.play('build_tower', sfx_config);
 
                         numberOfTowers++;
                         numberOfTowersDisplay.setText(`Towers: ${numberOfTowers}`);
@@ -468,6 +490,7 @@ class SceneGame extends Phaser.Scene {
                     }
                 } else {
                     buildInfoText.setText('Cannot Build Here');
+                    this.sound.play('error', sfx_config);
                 }
                 this.add.tween({
                     targets: buildInfoText,
@@ -483,11 +506,13 @@ class SceneGame extends Phaser.Scene {
         
         this.input.on('gameobjectdown', function (pointer, gameObject) {
             let demolishInfoText = this.add.text(496, 500, '', {fontSize: '40px', fill: 'firebrick', fontFamily: 'Arial', stroke: 'gold', strokeThickness: 3 }).setScrollFactor(0).setOrigin(0.5);
-            if (demolish && !pointerOnNav && gameObject.name === 'tower') {
+            if (demolish && !pointerOnNav && gameObject instanceof Tower) {
                 let x = Math.round(gameObject.x/16),
                 y = Math.round(gameObject.y/16);
                 
                 gameObject.destroy();
+                this.sound.play('demolish_tower', sfx_config);
+
                 numberOfTowers--;
                 numberOfTowersDisplay.setText(`Towers: ${numberOfTowers}`);
                 
@@ -566,18 +591,23 @@ class SceneGame extends Phaser.Scene {
         }
 
         if (hydralisksEscaped > 19 && !gameOver) {
-            this.scene.launch('gameOver')
+            this.sound.play('lose', sfx_config);
+            sfx_config.mute = true;
+            game_track.stop();
+
             clearInterval(timer);
             clearInterval(nextWaveInterval);
-            gameOver = true;
+
+            this.scene.launch('GameOver');
             this.scene.setVisible(false, 'HUD');
+            gameOver = true;
             this.add.text(496, 300, ' ').setScrollFactor(0);
             this.cameras.main.fade(4000)
             .on('camerafadeoutcomplete', function() {
                 setTimeout( () => {
-                    this.scene.stop('gameOver')
+                    this.scene.stop('GameOver')
                     this.scene.stop('HUD')
-                    this.scene.start('reset');
+                    this.scene.start('Reset');
                 }, 2000);
             }, this);
             return;
@@ -588,7 +618,7 @@ class SceneGame extends Phaser.Scene {
 class GameOver extends Phaser.Scene {
     
     constructor() {
-        super('gameOver');
+        super('GameOver');
     }
     
     create() {
@@ -608,7 +638,7 @@ const config = {
             gravity: { y: 0 }
         }
     },
-    scene: [ BootGame, Reset, SceneGame, HUD, GameOver ]
+    scene: [ BootGame, Reset, GameScene, HUD, GameOver ]
 };
 const game = new Phaser.Game(config);
 
