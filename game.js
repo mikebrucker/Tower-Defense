@@ -566,18 +566,33 @@ class SceneGame extends Phaser.Scene {
         }
 
         if (hydralisksEscaped > 19 && !gameOver) {
+            this.scene.launch('gameOver')
+            clearInterval(timer);
+            clearInterval(nextWaveInterval);
             gameOver = true;
             this.scene.setVisible(false, 'HUD');
-            gameOverText = this.add.text(496, 300, 'Mission Failed', {fontSize: '60px', fill: 'firebrick', fontFamily: 'Arial', stroke: 'gold', strokeThickness: 3 }).setOrigin(0.5).setScrollFactor(0);
-            this.cameras.main.fade(5000)
+            this.add.text(496, 300, ' ').setScrollFactor(0);
+            this.cameras.main.fade(4000)
             .on('camerafadeoutcomplete', function() {
-                clearInterval(timer);
-                clearInterval(nextWave);
-                this.scene.stop('HUD')
-                this.scene.start('reset');
+                setTimeout( () => {
+                    this.scene.stop('gameOver')
+                    this.scene.stop('HUD')
+                    this.scene.start('reset');
+                }, 2000);
             }, this);
             return;
         }
+    }
+}
+
+class GameOver extends Phaser.Scene {
+    
+    constructor() {
+        super('gameOver');
+    }
+    
+    create() {
+        gameOverText = this.add.text(496, 300, 'You failed to achieve victory!', {fontSize: '60px', fill: 'firebrick', fontFamily: 'Arial', stroke: 'gold', strokeThickness: 3 }).setOrigin(0.5).setScrollFactor(0);
     }
 }
 
@@ -593,7 +608,7 @@ const config = {
             gravity: { y: 0 }
         }
     },
-    scene: [ BootGame, Reset, SceneGame, HUD ]
+    scene: [ BootGame, Reset, SceneGame, HUD, GameOver ]
 };
 const game = new Phaser.Game(config);
 

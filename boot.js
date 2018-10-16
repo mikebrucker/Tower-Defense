@@ -39,49 +39,57 @@ class BootGame extends Phaser.Scene {
     create() {
         this.anims.create({
             key: 'headtower_up',
-            frames: this.anims.generateFrameNames('headtower', { prefix: 'up', start: 1, end: 4 }),
+            frames: [ { key: 'headtower', frame: 'up1' } ],
+            // frames: this.anims.generateFrameNames('headtower', { prefix: 'up', start: 1, end: 4 }),
             frameRate: 6,
             repeat: -1
         });
         this.anims.create({
             key: 'headtower_do',
-            frames: this.anims.generateFrameNames('headtower', { prefix: 'do', start: 1, end: 4 }),
+            frames: [ { key: 'headtower', frame: 'do1' } ],
+            // frames: this.anims.generateFrameNames('headtower', { prefix: 'do', start: 1, end: 4 }),
             frameRate: 6,
             repeat: -1
         });
         this.anims.create({
             key: 'headtower_le',
-            frames: this.anims.generateFrameNames('headtower', { prefix: 'le', start: 1, end: 4 }),
+            frames: [ { key: 'headtower', frame: 'le1' } ],
+            // frames: this.anims.generateFrameNames('headtower', { prefix: 'le', start: 1, end: 4 }),
             frameRate: 6,
             repeat: -1
         });
         this.anims.create({
             key: 'headtower_ri',
-            frames: this.anims.generateFrameNames('headtower', { prefix: 'ri', start: 1, end: 4 }),
+            frames: [ { key: 'headtower', frame: 'ri1' } ],
+            // frames: this.anims.generateFrameNames('headtower', { prefix: 'ri', start: 1, end: 4 }),
             frameRate: 6,
             repeat: -1
         });
         this.anims.create({
             key: 'headtower_ul',
-            frames: this.anims.generateFrameNames('headtower', { prefix: 'ul', start: 1, end: 4 }),
+            frames: [ { key: 'headtower', frame: 'ul1' } ],
+            // frames: this.anims.generateFrameNames('headtower', { prefix: 'ul', start: 1, end: 4 }),
             frameRate: 6,
             repeat: -1
         });
         this.anims.create({
             key: 'headtower_ur',
-            frames: this.anims.generateFrameNames('headtower', { prefix: 'ur', start: 1, end: 4 }),
+            frames: [ { key: 'headtower', frame: 'ur1' } ],
+            // frames: this.anims.generateFrameNames('headtower', { prefix: 'ur', start: 1, end: 4 }),
             frameRate: 6,
             repeat: -1
         });
         this.anims.create({
             key: 'headtower_dl',
-            frames: this.anims.generateFrameNames('headtower', { prefix: 'dl', start: 1, end: 4 }),
+            frames: [ { key: 'headtower', frame: 'dl1' } ],
+            // frames: this.anims.generateFrameNames('headtower', { prefix: 'dl', start: 1, end: 4 }),
             frameRate: 6,
             repeat: -1
         });
         this.anims.create({
             key: 'headtower_dr',
-            frames: this.anims.generateFrameNames('headtower', { prefix: 'dr', start: 1, end: 4 }),
+            frames: [ { key: 'headtower', frame: 'dr1' } ],
+            // frames: this.anims.generateFrameNames('headtower', { prefix: 'dr', start: 1, end: 4 }),
             frameRate: 6,
             repeat: -1
         });
