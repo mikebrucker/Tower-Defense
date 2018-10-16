@@ -3,8 +3,19 @@ class HUD extends Phaser.Scene {
     constructor() {
         super('HUD');
     }
-
+    
     create() {
+        let titleCard = this.add.text(496, 300, 'Tower Defense', {fontSize: '120px', fill: 'firebrick', fontFamily: 'Arial', stroke: 'gold', strokeThickness: 6 }).setOrigin(0.5);
+        this.add.tween({
+            targets: titleCard,
+            ease: 'Sine.easeInOut',
+            duration: 4000,
+            alpha: {
+                getStart: () => 1,
+                getEnd: () => 0
+            }
+        });
+
         let graphics = this.add.graphics();
         graphics.fillStyle(0x000000).fillRect(0, 542, 992, 100).setAlpha(0.5);
         let line = this.add.graphics();
@@ -13,24 +24,24 @@ class HUD extends Phaser.Scene {
         topline.fillStyle(0xFF4848, 1).fillRect(0, 541, 992, 1);
         topline.fillStyle(0xFF4848, 1).fillRect(0, 546, 992, 1);
 
-        towerDamageDisplay = this.add.text(4, 0, `Tower Damage: ${towerDamage}`, {fontSize: '20px', fill: 'gold', fontFamily: 'Arial', stroke: 'firebrick', strokeThickness: 3}).setOrigin(0);
-        numberOfTowersDisplay = this.add.text(4, 24, `Towers: ${numberOfTowers}`, {fontSize: '20px', fill: 'gold', fontFamily: 'Arial', stroke: 'firebrick', strokeThickness: 3}).setOrigin(0);
-        waveNumberDisplay = this.add.text(4, 48, `Wave: ${waveNumber}`, {fontSize: '20px', fill: 'gold', fontFamily: 'Arial', stroke: 'firebrick', strokeThickness: 3}).setOrigin(0);
+        towerDamageDisplay = this.add.text(4, 0, `Tower Damage: ${towerDamage}`, {fontSize: '20px', fill: 'gold', fontFamily: 'Arial', stroke: 'firebrick', strokeThickness: 3 }).setOrigin(0);
+        numberOfTowersDisplay = this.add.text(4, 24, `Towers: ${numberOfTowers}`, {fontSize: '20px', fill: 'gold', fontFamily: 'Arial', stroke: 'firebrick', strokeThickness: 3 }).setOrigin(0);
+        waveNumberDisplay = this.add.text(4, 48, `Wave: ${waveNumber}`, {fontSize: '20px', fill: 'gold', fontFamily: 'Arial', stroke: 'firebrick', strokeThickness: 3 }).setOrigin(0);
 
-        resourcesDisplay = this.add.text(324, 0, `Resources: ${resources}`, {fontSize: '20px', fill: 'gold', fontFamily: 'Arial', stroke: 'firebrick', strokeThickness: 3}).setOrigin(0.5, 0);
-        timerDisplay = this.add.text(496, 0, '', {fontSize: '20px', fill: 'gold', fontFamily: 'Arial', stroke: 'firebrick', strokeThickness: 3}).setOrigin(0.5, 0);
-        killsDisplay = this.add.text(648, 0, `Kills: ${kills}`, {fontSize: '20px', fill: 'gold', fontFamily: 'Arial', stroke: 'firebrick', strokeThickness: 3}).setOrigin(0.5, 0);
+        resourcesDisplay = this.add.text(324, 0, `Resources: ${resources}`, {fontSize: '20px', fill: 'gold', fontFamily: 'Arial', stroke: 'firebrick', strokeThickness: 3 }).setOrigin(0.5, 0);
+        timerDisplay = this.add.text(496, 0, '', {fontSize: '20px', fill: 'gold', fontFamily: 'Arial', stroke: 'firebrick', strokeThickness: 3 }).setOrigin(0.5, 0);
+        killsDisplay = this.add.text(648, 0, `Kills: ${kills}`, {fontSize: '20px', fill: 'gold', fontFamily: 'Arial', stroke: 'firebrick', strokeThickness: 3 }).setOrigin(0.5, 0);
 
-        hydralisksEscapedDisplay = this.add.text(988, 0, `Hydralisks Escaped: ${hydralisksEscaped}`, {fontSize: '20px', fill: 'gold', fontFamily: 'Arial', stroke: 'firebrick', strokeThickness: 3}).setOrigin(1, 0);
-        hydraliskSpeedDisplay = this.add.text(988, 24, `Hydralisk Speed: ${hydraliskSpeed}`, {fontSize: '20px', fill: 'gold', fontFamily: 'Arial', stroke: 'firebrick', strokeThickness: 3}).setOrigin(1, 0);
-        hydraliskHPDisplay = this.add.text(988, 48, `Hydralisk HP: ${hydraliskHP}`, {fontSize: '20px', fill: 'gold', fontFamily: 'Arial', stroke: 'firebrick', strokeThickness: 3}).setOrigin(1, 0);
+        hydralisksEscapedDisplay = this.add.text(988, 0, `Hydralisks Escaped: ${hydralisksEscaped}`, {fontSize: '20px', fill: 'gold', fontFamily: 'Arial', stroke: 'firebrick', strokeThickness: 3 }).setOrigin(1, 0);
+        hydraliskSpeedDisplay = this.add.text(988, 24, `Hydralisk Speed: ${hydraliskSpeed}`, {fontSize: '20px', fill: 'gold', fontFamily: 'Arial', stroke: 'firebrick', strokeThickness: 3 }).setOrigin(1, 0);
+        hydraliskHPDisplay = this.add.text(988, 48, `Hydralisk HP: ${hydraliskHP}`, {fontSize: '20px', fill: 'gold', fontFamily: 'Arial', stroke: 'firebrick', strokeThickness: 3 }).setOrigin(1, 0);
         
-        buildInfoText = this.add.text(496, 500, '', {fontSize: '40px', fill: 'firebrick', fontFamily: 'Arial', stroke: 'gold', strokeThickness: 3 }).setOrigin(0.5);
-        waveInfoText = this.add.text(496, 300, '', {fontSize: '60px', fill: 'firebrick', fontFamily: 'Arial', stroke: 'gold', strokeThickness: 3 }).setOrigin(0.5);
-        countDownText = this.add.text(496, 300, '', {fontSize: '160px', fill: 'firebrick', fontFamily: 'Arial', stroke: 'gold', strokeThickness: 3 }).setOrigin(0.5);
-        hydralisksEscapedInfoText = this.add.text(496, 500, '', {fontSize: '50px', fill: 'firebrick', fontFamily: 'Arial', stroke: 'gold', strokeThickness: 3 }).setOrigin(0.5);
+        buildInfoText = this.add.text(496, 500, '', {fontSize: '40px', fill: 'firebrick', fontFamily: 'Arial', stroke: 'gold', strokeThickness: 3  }).setOrigin(0.5);
+        waveInfoText = this.add.text(496, 300, '', {fontSize: '60px', fill: 'firebrick', fontFamily: 'Arial', stroke: 'gold', strokeThickness: 3  }).setOrigin(0.5);
+        countDownText = this.add.text(496, 300, '', {fontSize: '160px', fill: 'firebrick', fontFamily: 'Arial', stroke: 'gold', strokeThickness: 3  }).setOrigin(0.5);
+        hydralisksEscapedInfoText = this.add.text(496, 500, '', {fontSize: '50px', fill: 'firebrick', fontFamily: 'Arial', stroke: 'gold', strokeThickness: 3  }).setOrigin(0.5);
         
-        demolishButton = this.add.text(4, 573, 'Demolish', {fontSize: '40px', fill: 'firebrick', fontFamily: 'Arial', stroke: 'gold', strokeThickness: 6})
+        demolishButton = this.add.text(4, 573, 'Demolish', {fontSize: '40px', fill: 'firebrick', fontFamily: 'Arial', stroke: 'gold', strokeThickness: 6 })
         .setInteractive().on('pointerdown', function() {
             build = false;
             demolish = !demolish;
@@ -44,9 +55,9 @@ class HUD extends Phaser.Scene {
             }
         }, this).setAlpha(0.33).setOrigin(0, 0.5);
         
-        this.add.text(316, 575, '1', {fontSize: '30px', fill: 'firebrick', fontFamily: 'Arial', stroke: 'gold', strokeThickness: 6}).setOrigin(0.5);
+        this.add.text(316, 575, '1', {fontSize: '30px', fill: 'firebrick', fontFamily: 'Arial', stroke: 'gold', strokeThickness: 6 }).setOrigin(0.5);
         
-        buildButton = this.add.text(252, 573, 'Build', {fontSize: '40px', fill: 'firebrick', fontFamily: 'Arial', stroke: 'gold', strokeThickness: 6})
+        buildButton = this.add.text(252, 573, 'Build', {fontSize: '40px', fill: 'firebrick', fontFamily: 'Arial', stroke: 'gold', strokeThickness: 6 })
         .setInteractive().on('pointerdown', function() {
             if (resources > 0) {
                 build = !build;
@@ -61,9 +72,9 @@ class HUD extends Phaser.Scene {
             }
         }, this).setAlpha(0.33).setOrigin(0.5);
         
-        upgradeCostDisplay = this.add.text(524, 575, upgradeCost, {fontSize: '30px', fill: 'firebrick', fontFamily: 'Arial', stroke: 'gold', strokeThickness: 6}).setOrigin(0.5);
+        upgradeCostDisplay = this.add.text(524, 575, upgradeCost, {fontSize: '30px', fill: 'firebrick', fontFamily: 'Arial', stroke: 'gold', strokeThickness: 6 }).setOrigin(0.5);
         
-        upgradeButton = this.add.text(424, 573, 'Upgrade', {fontSize: '40px', fill: 'gold', fontFamily: 'Arial', stroke: 'firebrick', strokeThickness: 6})
+        upgradeButton = this.add.text(424, 573, 'Upgrade', {fontSize: '40px', fill: 'gold', fontFamily: 'Arial', stroke: 'firebrick', strokeThickness: 6 })
         .setInteractive().on('pointerdown', function() {
             if (resources >= upgradeCost) {
                 for (let tower of headtowers.getChildren()) {
@@ -149,7 +160,7 @@ class HUD extends Phaser.Scene {
                 min = 0;
                 sec = 46;
                 if (waveNumber % 4 === 0) {
-                    hydraliskHPIncrease += 2;
+                    hydraliskHPIncrease += 1;
                 }
                 if (waveNumber > 1) {
                     hydraliskHP += hydraliskHPIncrease;
@@ -160,12 +171,14 @@ class HUD extends Phaser.Scene {
                         birthTime -= 72;
                     }    
                 }
-                nextWave();
-                waveInfoText.setText(`Wave ${waveNumber}`);
-                waveNumberDisplay.setText(`Wave: ${waveNumber}`);
-                hydraliskHPDisplay.setText(`Hydralisk HP: ${hydraliskHP}`);
-                hydraliskSpeedDisplay.setText(`Hydralisk Speed: ${hydraliskSpeed}`);    
-                waveNumber++;
+                if (waveNumber < 31) {
+                    nextWave();
+                    waveInfoText.setText(`Wave ${waveNumber}`);
+                    waveNumberDisplay.setText(`Wave: ${waveNumber}`);
+                    hydraliskHPDisplay.setText(`Hydralisk HP: ${hydraliskHP}`);
+                    hydraliskSpeedDisplay.setText(`Hydralisk Speed: ${hydraliskSpeed}`);    
+                    waveNumber++;
+                }
                 this.add.tween({
                     targets: waveInfoText,
                     ease: 'Sine.easeInOut',

@@ -364,7 +364,7 @@ class Hydralisk extends Phaser.GameObjects.Sprite {
             this.destroy();
             kills++;
             killsDisplay.setText(`Kills: ${kills}`)
-            if (kills % 8 === 0 && kills != 0) {
+            if (kills % 8 === 0) {
                 resources += 1;
                 resourcesDisplay.setText(`Resources: ${resources}`)
                 if (resources >= upgradeCost) {
@@ -593,29 +593,45 @@ class GameScene extends Phaser.Scene {
             pointerOnNav = false;
         }
 
-        if (hydralisksEscaped > 19 && !gameOver) {
-            this.sound.play('lose', sfx_config);
-            sfx_config.mute = true;
-            game_track.stop();
-
-            clearInterval(timer);
-            clearInterval(nextWaveInterval);
-
-            gameOver = true;
-
-            this.scene.launch('GameOver');
-            this.scene.setVisible(false, 'HUD');
-            this.add.text(496, 300, ' ').setScrollFactor(0);
-
-            this.cameras.main.fade(4000)
-            .on('camerafadeoutcomplete', function() {
-                setTimeout( () => {
-                    this.scene.stop('GameOver')
-                    this.scene.stop('HUD')
-                    this.scene.start('Reset');
-                }, 2000);
-            }, this);
-            return;
+        if (!gameOver) {
+            if (hydralisksEscaped > 19) {
+                this.scene.launch('GameOver');
+                gameOver = true;
+                this.sound.play('lose', sfx_config);
+                sfx_config.mute = true;
+                game_track.stop();
+                clearInterval(timer);
+                clearInterval(nextWaveInterval);
+                this.scene.setVisible(false, 'HUD');
+                this.add.text(496, 300, ' ').setScrollFactor(0);
+                this.cameras.main.fade(4000)
+                .on('camerafadeoutcomplete', function() {
+                    setTimeout( () => {
+                        this.scene.stop('GameOver')
+                        this.scene.stop('HUD')
+                        this.scene.start('Reset');
+                    }, 2000);
+                }, this);
+                return;
+            } else if (waveNumber > 30 && sec < 40 && hydralisks.countActive(true) === 0) {
+                this.scene.launch('GameOver');
+                gameOver = true;
+                sfx_config.mute = true;
+                game_track.stop();
+                clearInterval(timer);
+                clearInterval(nextWaveInterval);
+                this.scene.setVisible(false, 'HUD');
+                this.add.text(496, 300, ' ').setScrollFactor(0);
+                this.cameras.main.fade(4000)
+                .on('camerafadeoutcomplete', function() {
+                    setTimeout( () => {
+                        this.scene.stop('GameOver')
+                        this.scene.stop('HUD')
+                        this.scene.start('Reset');
+                    }, 2000);
+                }, this);
+                return;
+            }
         }
     }
 }
@@ -627,7 +643,12 @@ class GameOver extends Phaser.Scene {
     }
     
     create() {
-        gameOverText = this.add.text(496, 300, 'You failed to achieve victory!', {fontSize: '60px', fill: 'firebrick', fontFamily: 'Arial', stroke: 'gold', strokeThickness: 3 }).setOrigin(0.5).setScrollFactor(0);
+        gameOverText = this.add.text(496, 300, '', {fontSize: '60px', fill: 'firebrick', fontFamily: 'Arial', stroke: 'gold', strokeThickness: 3 }).setOrigin(0.5).setScrollFactor(0);
+        if (hydralisksEscaped > 20) {
+            gameOverText.setText('You failed to achieve victory!');
+        } else {
+            gameOverText.setText('You survived all 30 waves!');
+        }
     }
 }
 

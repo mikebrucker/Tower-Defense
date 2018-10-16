@@ -14,7 +14,7 @@ body {
     font-weight: bolder;
     color: black;
 }
-body, #gameContainer, #instructions {
+body, #gameContainer, #instructions, h1 {
     margin: 0 auto;
 }
 
@@ -28,12 +28,21 @@ body, #gameContainer, #instructions {
     border-bottom: 1px;
 }
 
-.instructions {
+.instructions, h1 {
     -webkit-text-stroke-width: 2px;
+    text-align: left;
+}
+
+h1 {
+    -webkit-text-stroke-color: gold;
+    -webkit-text-fill-color: black;
+    font-size: 56px;
+}
+
+.instructions {
     -webkit-text-stroke-color: black;
     -webkit-text-fill-color: gold;
     font-size: 28px;
-    text-align: left;
 }
 
 #instructions {
