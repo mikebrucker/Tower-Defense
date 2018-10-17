@@ -8,11 +8,12 @@ class Reset extends Phaser.Scene {
         sfx_config = {
             mute: false,
             loop: false,
+            volume: 0.5,
         },
         music_config = {
             mute: false,
             loop: true,
-            volume: 0.8,
+            volume: 0.4,
         },
         game_track,
         
@@ -51,6 +52,7 @@ class Reset extends Phaser.Scene {
         buildGraphic,
         logWorldLayer,
         path,
+        lurkerpath,
         
         waveInfoText,
         countDownText,
@@ -60,17 +62,21 @@ class Reset extends Phaser.Scene {
         
         births,
         hydralisks,
+        lurkers,
         deaths,
         headtowers,
         bullets,
         
         upgradeCost = 1,
-        resources = 10,
+        resources = 12,
         towerDamage = 10,
         numberOfTowers = 0,
         waveNumber = 1,
         kills = 0,
-        hydraliskHP = 96,
+        lurkerHP = 1536,
+        lurkerSpeed = 20,
+        lurkerHPIncrease = 256,
+        hydraliskHP = 112,
         hydraliskHPIncrease = 16,
         hydraliskSpeed = 40,
         hydralisksEscaped = 0,

@@ -33,9 +33,12 @@ class BootGame extends Phaser.Scene {
         this.load.image('bullet_single', 'public/images/bullet_single.png');
         this.load.atlas('headtower', 'public/images/headtower.png', 'public/images/headtower.json');
         this.load.atlas('hydralisk', 'public/images/hydralisk.png', 'public/images/hydralisk.json');
+        this.load.atlas('lurker', 'public/images/lurker.png', 'public/images/lurker.json');
         this.load.atlas('bullet', 'public/images/bullet.png', 'public/images/bullet.json');
-        this.load.audio('birth', 'public/audio/birth.ogg');
+        this.load.audio('hydra_birth', 'public/audio/hydra_birth.ogg');
         this.load.audio('hydra_death', 'public/audio/hydra_death.ogg');
+        this.load.audio('lurker_birth', 'public/audio/lurker_birth.ogg');
+        this.load.audio('lurker_death', 'public/audio/lurker_death.ogg');
         this.load.audio('bullet', 'public/audio/bullet.ogg');
         this.load.audio('build_tower', 'public/audio/build_tower.ogg');
         this.load.audio('demolish_tower', 'public/audio/demolish_tower.ogg');
@@ -192,6 +195,77 @@ class BootGame extends Phaser.Scene {
         this.anims.create({
             key: 'bullet_single',
             frames: [ { key: 'bullet_single', frame: 0 } ],
+            frameRate: 20,
+        });
+        this.anims.create({
+            key: 'lurker_side',
+            frames: this.anims.generateFrameNames('lurker', { prefix: 'side', start: 1, end: 7 }),
+            frameRate: 10,
+            repeat: -1
+        });
+        this.anims.create({
+            key: 'lurker_up',
+            frames: this.anims.generateFrameNames('lurker', { prefix: 'up', start: 1, end: 7 }),
+            frameRate: 10,
+            repeat: -1
+        });
+        this.anims.create({
+            key: 'lurker_down',
+            frames: this.anims.generateFrameNames('lurker', { prefix: 'down', start: 1, end: 7 }),
+            frameRate: 10,
+            repeat: -1
+        });
+        this.anims.create({
+            key: 'lurker_udiag',
+            frames: this.anims.generateFrameNames('lurker', { prefix: 'udiag', start: 1, end: 7 }),
+            frameRate: 10,
+            repeat: -1
+        });
+        this.anims.create({
+            key: 'lurker_ddiag',
+            frames: this.anims.generateFrameNames('lurker', { prefix: 'ddiag', start: 1, end: 7 }),
+            frameRate: 10,
+            repeat: -1
+        });
+        this.anims.create({
+            key: 'lurker_uldiag',
+            frames: this.anims.generateFrameNames('lurker', { prefix: 'uldiag', start: 1, end: 7 }),
+            frameRate: 10,
+            repeat: -1
+        });
+        this.anims.create({
+            key: 'lurker_dldiag',
+            frames: this.anims.generateFrameNames('lurker', { prefix: 'dldiag', start: 1, end: 7 }),
+            frameRate: 10,
+            repeat: -1
+        });
+        this.anims.create({
+            key: 'lurker_uhdiag',
+            frames: this.anims.generateFrameNames('lurker', { prefix: 'uhdiag', start: 1, end: 7 }),
+            frameRate: 10,
+            repeat: -1
+        });
+        this.anims.create({
+            key: 'lurker_dhdiag',
+            frames: this.anims.generateFrameNames('lurker', { prefix: 'dhdiag', start: 1, end: 7 }),
+            frameRate: 10,
+            repeat: -1
+        });
+        this.anims.create({
+            key: 'lurker_birth',
+            frames: this.anims.generateFrameNames('lurker', { prefix: 'birth', start: 1, end: 23 }),
+            frameRate: 10,
+            repeat: 0
+        })
+        this.anims.create({
+            key: 'lurker_death',
+            frames: this.anims.generateFrameNames('lurker', { prefix: 'death', start: 1, end: 10 }),
+            frameRate: 10,
+            repeat: 0
+        })
+        this.anims.create({
+            key: 'lurker_stop',
+            frames: [ { key: 'lurker', frame: 'down1' } ],
             frameRate: 20,
         });
     }

@@ -159,25 +159,28 @@ class HUD extends Phaser.Scene {
                 timerDisplay.setText('');
                 min = 0;
                 sec = 46;
-                if (waveNumber % 4 === 0) {
-                    hydraliskHPIncrease += 1;
-                }
-                if (waveNumber > 1) {
-                    hydraliskHP += hydraliskHPIncrease;
-                    if (hydraliskSpeed < 100) {
-                        hydraliskSpeed += 1;
-                    }
-                    if (birthTime > 1840) {
-                        birthTime -= 72;
-                    }    
-                }
                 if (waveNumber < 31) {
+                    if (waveNumber % 4 === 0) {
+                        hydraliskHPIncrease += 2;
+                    }
+                    if (waveNumber > 1) {
+                        hydraliskHP += hydraliskHPIncrease;
+                        if (hydraliskSpeed < 100) {
+                            hydraliskSpeed += 1;
+                        }
+                        if (birthTime > 1840) {
+                            birthTime -= 72;
+                        }    
+                    }
+                    if ((waveNumber - 1) % 5 === 0) {
+                        lurkerHP += lurkerHPIncrease;
+                        lurkerSpeed += 2;
+                    }
                     nextWave();
                     waveInfoText.setText(`Wave ${waveNumber}`);
                     waveNumberDisplay.setText(`Wave: ${waveNumber}`);
                     hydraliskHPDisplay.setText(`Hydralisk HP: ${hydraliskHP}`);
                     hydraliskSpeedDisplay.setText(`Hydralisk Speed: ${hydraliskSpeed}`);    
-                    waveNumber++;
                 }
                 this.add.tween({
                     targets: waveInfoText,

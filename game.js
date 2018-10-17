@@ -1,11 +1,12 @@
 let sfx_config = {
     mute: false,
     loop: false,
+    volume: 0.5,
 },
 music_config = {
     mute: false,
     loop: true,
-    volume: 0.8,
+    volume: 0.4,
 },
 game_track,
 
@@ -44,6 +45,7 @@ sfxButton,
 buildGraphic,
 logWorldLayer,
 path,
+lurkerpath,
 
 waveInfoText,
 countDownText,
@@ -53,17 +55,21 @@ gameOverText,
 
 births,
 hydralisks,
+lurkers,
 deaths,
 headtowers,
 bullets,
 
 upgradeCost = 1,
-resources = 10,
+resources = 12,
 towerDamage = 10,
 numberOfTowers = 0,
 waveNumber = 1,
 kills = 0,
-hydraliskHP = 96,
+lurkerHP = 1536,
+lurkerSpeed = 20,
+lurkerHPIncrease = 256,
+hydraliskHP = 112,
 hydraliskHPIncrease = 16,
 hydraliskSpeed = 40,
 hydralisksEscaped = 0,
@@ -71,10 +77,19 @@ birthTime = 3496;
 
 function nextWave() {
     let swarm = 0;
+    if (waveNumber % 5 === 0) {
+        let lurkerbirth = births.create(112, 400, 'lurker');
+        lurkerbirth.anims.play('lurker_birth').on('animationcomplete', () => {
+            let lurker = lurkers.get(112, 400, 'lurker');
+            game.sound.play('lurker_birth', sfx_config);
+            lurkerbirth.destroy();
+        })
+        // lurker.body.setCircle(#, #, #)
+    }
     let birth1 = births.create(16, 512, 'hydralisk');
     game.sound.play('egg', sfx_config);
     birth1.anims.play('hydra_birth').on('animationcomplete', () => {
-        game.sound.play('birth', sfx_config);
+        game.sound.play('hydra_birth', sfx_config);
         let hydra = hydralisks.get(16, 512, 'hydralisk')
         hydra.body.setCircle(16, 6, 13)
         hydra.follower.t = 16/3744;
@@ -116,10 +131,18 @@ function nextWave() {
         birth6.destroy();
     }, this);
     nextWaveInterval = setInterval( () => {
+        if( (waveNumber === 10 && swarm === 0) || (waveNumber === 15 && swarm === 0) || (waveNumber === 20 && swarm < 2) || (waveNumber === 25 && swarm < 2) || (waveNumber === 30)){
+            let lurkerbirth = births.create(112, 400, 'lurker');
+            lurkerbirth.anims.play('lurker_birth').on('animationcomplete', () => {
+                let lurker = lurkers.get(112, 400, 'lurker');
+                lurkerbirth.destroy();
+            })
+            // lurker.body.setCircle(#, #, #)
+        }
         let birth1 = births.create(16, 512, 'hydralisk');
         game.sound.play('egg', sfx_config);
         birth1.anims.play('hydra_birth').on('animationcomplete', () => {
-            game.sound.play('birth', sfx_config);
+            game.sound.play('hydra_birth', sfx_config);
             let hydra = hydralisks.get(16, 512, 'hydralisk');
             hydra.body.setCircle(16, 6, 13)
             hydra.follower.t = 16/3744;
@@ -162,6 +185,7 @@ function nextWave() {
         }, this);
         swarm++;
         if (swarm > 2) {
+            waveNumber++;
             clearInterval(nextWaveInterval);
         }
     }, birthTime);
@@ -224,11 +248,17 @@ class Tower extends Phaser.GameObjects.Sprite {
     }
 
     getEnemy() {
-        let enemyUnits = hydralisks.getChildren();
+        let enemyHydras = hydralisks.getChildren();
+        let enemyLurkers = lurkers.getChildren();
         let enemiesInRange = [];
-        for (let i = 0; i < enemyUnits.length; i++) {       
-            if (enemyUnits[i].active && Phaser.Math.Distance.Between(this.x, this.y, enemyUnits[i].x, enemyUnits[i].y) <= this.range) {
-                enemiesInRange.push([Phaser.Math.Distance.Between(this.x, this.y, enemyUnits[i].x, enemyUnits[i].y), enemyUnits[i]]);
+        for (let i = 0; i < enemyHydras.length; i++) {       
+            if (enemyHydras[i].active && Phaser.Math.Distance.Between(this.x, this.y, enemyHydras[i].x, enemyHydras[i].y) <= this.range) {
+                enemiesInRange.push([Phaser.Math.Distance.Between(this.x, this.y, enemyHydras[i].x, enemyHydras[i].y), enemyHydras[i]]);
+            }
+        }
+        for (let i = 0; i < enemyLurkers.length; i++) {       
+            if (enemyLurkers[i].active && Phaser.Math.Distance.Between(this.x, this.y, enemyLurkers[i].x, enemyLurkers[i].y) <= this.range) {
+                enemiesInRange.push([Phaser.Math.Distance.Between(this.x, this.y, enemyLurkers[i].x, enemyLurkers[i].y), enemyLurkers[i]]);
             }
         }
         enemiesInRange.sort(function([a], [b]) { return a - b });
@@ -386,6 +416,125 @@ class Hydralisk extends Phaser.GameObjects.Sprite {
     }
 }
 
+class Lurker extends Hydralisk {
+    
+    constructor(scene, x, y, texture, frame) {
+        super(scene, x, y, texture, frame);
+        this.hp = lurkerHP
+        this.damage = 100;
+        this.follower = { t: 0, vec: new Phaser.Math.Vector2() };
+    }
+
+    update(time, delta) {
+        let prevX = this.follower.vec.x,
+        prevY = this.follower.vec.y;
+    
+        this.follower.t += lurkerSpeed/100000;
+    
+        lurkerpath.getPoint(this.follower.t, this.follower.vec);
+        
+        this.setPosition(this.follower.vec.x, this.follower.vec.y);
+        
+        if (this.follower.vec.x > prevX) {
+            if (this.follower.vec.y > prevY) {
+                // if (Math.abs(this.body.velocity.x) < Math.abs(this.body.velocity.y)) {
+                //     this.anims.play('lurker_dldiag', true).setFlipX(false);
+                // } else if (Math.abs(this.body.velocity.x) > Math.abs(this.body.velocity.y)) {
+                //     this.anims.play('lurker_dhdiag', true).setFlipX(false);
+                // } else {
+                    this.anims.play('lurker_ddiag', true).setFlipX(false);
+                // }
+            } else if (this.follower.vec.y < prevY) {
+                // if (Math.abs(this.body.velocity.x) < Math.abs(this.body.velocity.y)) {
+                //     this.anims.play('lurker_uhdiag', true).setFlipX(false);
+                // } else if (Math.abs(this.body.velocity.x) > Math.abs(this.body.velocity.y)) {
+                //     this.anims.play('lurker_uldiag', true).setFlipX(false);
+                // } else {
+                    this.anims.play('lurker_udiag', true).setFlipX(false);
+                // }
+            } else {
+                this.anims.play('lurker_side', true).setFlipX(false);
+            }
+        } else if (this.follower.vec.x < prevX) {
+            if (this.follower.vec.y > prevY) {
+            //     if (Math.abs(this.body.velocity.x) < Math.abs(this.body.velocity.y)) {
+            //         this.anims.play('lurker_dldiag', true).setFlipX(true);
+            //     } else if (Math.abs(this.body.velocity.x) > Math.abs(this.body.velocity.y)) {
+            //         this.anims.play('lurker_dhdiag', true).setFlipX(true);
+            //     } else {
+                    this.anims.play('lurker_ddiag', true).setFlipX(true);
+            //     }
+            } else if (this.follower.vec.y < prevY) {
+            //     if (Math.abs(this.body.velocity.x) < Math.abs(this.body.velocity.y)) {
+            //         this.anims.play('lurker_uhdiag', true).setFlipX(true);
+            //     } else if (Math.abs(this.body.velocity.x) > Math.abs(this.body.velocity.y)) {
+            //         this.anims.play('lurker_uldiag', true).setFlipX(true);
+            //     } else {
+                    this.anims.play('lurker_udiag', true).setFlipX(true);
+            //     }
+            // } else {
+                this.anims.play('lurker_side', true).setFlipX(true);
+            }
+        } else {
+            if (this.follower.vec.y > prevY) {
+                this.anims.play('lurker_down', true);
+            } else if (this.follower.vec.y < prevY) {
+                this.anims.play('lurker_up', true);
+            } else {
+                this.anims.play('lurker_stop');
+            }
+        }
+        
+        if (this.body.x > 1808) {
+            hydralisksEscaped++; 
+            if (hydralisksEscaped === 1) {
+                hydralisksEscapedInfoText.setText(`A Hydralisk Has Escaped`)
+            } else {
+                hydralisksEscapedInfoText.setText(`${hydralisksEscaped} Hydralisks Have Escaped`)
+            }
+            hydralisksEscapedDisplay.setText(`Hydralisks Escaped: ${hydralisksEscaped}`)
+            this.scene.add.tween({
+                targets: hydralisksEscapedInfoText,
+                ease: 'Sine.easeInOut',
+                duration: 4000,
+                alpha: {
+                    getStart: () => 1,
+                    getEnd: () => 0
+                }
+            });
+            game.sound.play('escape', sfx_config);
+            this.destroy();
+        }
+    }
+
+    receiveDamage(damage) {
+        this.hp -= damage;
+        if (this.hp <= 0) {
+            this.deathAnimation(this.x, this.y);
+            game.sound.play('lurker_death', sfx_config);
+            this.destroy();
+            resources += 2;
+            kills++;
+            killsDisplay.setText(`Kills: ${kills}`)
+            if (kills % 8 === 0) {
+                resources += 1;
+                resourcesDisplay.setText(`Resources: ${resources}`)
+                if (resources >= upgradeCost) {
+                    upgradeButton.setFill('gold').setStroke('firebrick').setAlpha(1);
+                } else {
+                    upgradeButton.setFill('firebrick').setStroke('gold').setAlpha(0.33);
+                }
+            }
+        }
+    }
+    
+    deathAnimation(x, y) {
+        let death = deaths.create(x, y, 'lurker').anims.play('lurker_death').on('animationcomplete', () => {
+            death.destroy();
+        });
+    }
+}
+
 class GameScene extends Phaser.Scene {
     
     constructor() {
@@ -424,6 +573,24 @@ class GameScene extends Phaser.Scene {
         path.lineTo(1488, 512);
         path.lineTo(1488, 288);
         path.lineTo(1920, 288);
+
+        lurkerpath = this.add.path(112, 400);
+        lurkerpath.lineTo(112, 512);
+        lurkerpath.lineTo(432, 512);
+        lurkerpath.lineTo(432, 288);
+        lurkerpath.lineTo(656, 288);
+        lurkerpath.lineTo(656, 512);
+        lurkerpath.lineTo(864, 512);
+        lurkerpath.lineTo(864, 224);
+        lurkerpath.lineTo(960, 224);
+        lurkerpath.lineTo(960, 576);
+        lurkerpath.lineTo(1056, 576);
+        lurkerpath.lineTo(1056, 288);
+        lurkerpath.lineTo(1264, 288);
+        lurkerpath.lineTo(1264, 512);
+        lurkerpath.lineTo(1488, 512);
+        lurkerpath.lineTo(1488, 288);
+        lurkerpath.lineTo(1920, 288);
         
         this.cameras.main.setBounds(0, 0, map.widthInPixels, map.heightInPixels);
         this.cameras.main.centerToBounds();
@@ -445,6 +612,9 @@ class GameScene extends Phaser.Scene {
         });
         hydralisks = this.physics.add.group({
             classType: Hydralisk, runChildUpdate: true
+        });
+        lurkers = this.physics.add.group({
+            classType: Lurker, runChildUpdate: true
         });
         bullets = this.physics.add.group({
             classType: Bullet, runChildUpdate: true
@@ -594,7 +764,7 @@ class GameScene extends Phaser.Scene {
         }
 
         if (!gameOver) {
-            if ( (waveNumber > 30 && sec < 40 && hydralisks.countActive(true) === 0) || hydralisksEscaped > 19) {
+            if ( (waveNumber > 30 && sec < 40 && hydralisks.countActive(true) === 0 && lurkers.countActive(true) === 0) || hydralisksEscaped > 19) {
                 gameOver = true;
                 this.scene.launch('GameOver');
                 if (hydralisksEscaped > 19) {
