@@ -82,9 +82,9 @@ function nextWave() {
         lurkerbirth.anims.play('lurker_birth').on('animationcomplete', () => {
             let lurker = lurkers.get(112, 400, 'lurker');
             game.sound.play('lurker_birth', sfx_config);
+            lurker.body.setCircle(16, 19, 17)
             lurkerbirth.destroy();
         })
-        // lurker.body.setCircle(#, #, #)
     }
     let birth1 = births.create(16, 512, 'hydralisk');
     game.sound.play('egg', sfx_config);
@@ -135,9 +135,9 @@ function nextWave() {
             let lurkerbirth = births.create(112, 400, 'lurker');
             lurkerbirth.anims.play('lurker_birth').on('animationcomplete', () => {
                 let lurker = lurkers.get(112, 400, 'lurker');
+                lurker.body.setCircle(16, 19, 17)
                 lurkerbirth.destroy();
             })
-            // lurker.body.setCircle(#, #, #)
         }
         let birth1 = births.create(16, 512, 'hydralisk');
         game.sound.play('egg', sfx_config);
