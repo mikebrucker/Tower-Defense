@@ -88,6 +88,7 @@ function somethingForNothing() {
     towerDamage += 2;
     upgradeCost++;
     upgradeCostDisplay.setText(upgradeCost);
+    towerDamageDisplay.setText(`Tower Damage: ${towerDamage}`);
     if (resources >= upgradeCost) {
         upgradeButton.setFill('gold').setStroke('firebrick').setAlpha(1);
     } else {
@@ -103,6 +104,7 @@ function showMeTheMoney() {
         upgradeButton.setFill('firebrick').setStroke('gold').setAlpha(0.33);
     }
 }
+//
 
 function nextWave() {
     let swarm = 0;
