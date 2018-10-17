@@ -707,6 +707,17 @@ class GameScene extends Phaser.Scene {
                 logWorldLayer[y-1][x-1].properties.buildable = true;
             }
         }, this);
+        
+        game.events.on('blur', function() {
+            this.sound.pauseAll();
+            sfx_config.mute = true;
+    
+            musicOn = false;
+            sfxOn = false;
+    
+            sfxButton.setFill('firebrick').setStroke('gold').setAlpha(0.33);
+            musicButton.setFill('firebrick').setStroke('gold').setAlpha(0.33);
+        }, this);
     }
     
     update(time, delta) {
