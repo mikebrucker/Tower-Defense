@@ -16,8 +16,10 @@ class Reset extends Phaser.Scene {
             volume: 0.4,
         },
         game_track,
+        bulletSoundsPlayed = 0,
         
         controls,
+        gameFocus = true,
         gameOver = false,
         musicOn = true,
         sfxOn = true,

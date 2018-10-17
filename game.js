@@ -9,8 +9,10 @@ music_config = {
     volume: 0.4,
 },
 game_track,
+bulletSoundsPlayed = 0,
 
 controls,
+gameFocus = true,
 gameOver = false,
 musicOn = true,
 sfxOn = true,
@@ -75,6 +77,30 @@ hydraliskSpeed = 40,
 hydralisksEscaped = 0,
 birthTime = 3496;
 
+// cheat codes
+function somethingForNothing() {
+    for (let tower of headtowers.getChildren()) {
+        tower.damage += 2;
+    }
+    towerDamage += 2;
+    upgradeCost++;
+    upgradeCostDisplay.setText(upgradeCost);
+    if (resources >= upgradeCost) {
+        upgradeButton.setFill('gold').setStroke('firebrick').setAlpha(1);
+    } else {
+        upgradeButton.setFill('firebrick').setStroke('gold').setAlpha(0.33)
+    }
+}
+function showMeTheMoney() {
+    resources += 10000;
+    resourcesDisplay.setText(`Resources: ${resources}`)
+    if (resources >= upgradeCost) {
+        upgradeButton.setFill('gold').setStroke('firebrick').setAlpha(1);
+    } else {
+        upgradeButton.setFill('firebrick').setStroke('gold').setAlpha(0.33);
+    }
+}
+
 function nextWave() {
     let swarm = 0;
     if (waveNumber % 5 === 0) {
@@ -131,62 +157,64 @@ function nextWave() {
         birth6.destroy();
     }, this);
     nextWaveInterval = setInterval( () => {
-        if( (waveNumber === 10 && swarm === 0) || (waveNumber === 15 && swarm === 0) || (waveNumber === 20 && swarm < 2) || (waveNumber === 25 && swarm < 2) || (waveNumber === 30)){
-            let lurkerbirth = births.create(112, 400, 'lurker');
-            lurkerbirth.anims.play('lurker_birth').on('animationcomplete', () => {
-                let lurker = lurkers.get(112, 400, 'lurker');
-                lurker.body.setCircle(16, 19, 17)
-                lurkerbirth.destroy();
-            })
-        }
-        let birth1 = births.create(16, 512, 'hydralisk');
-        game.sound.play('egg', sfx_config);
-        birth1.anims.play('hydra_birth').on('animationcomplete', () => {
-            game.sound.play('hydra_birth', sfx_config);
-            let hydra = hydralisks.get(16, 512, 'hydralisk');
-            hydra.body.setCircle(16, 6, 13)
-            hydra.follower.t = 16/3744;
-            birth1.destroy();
-        }, this);
-        let birth2 = births.create(52, 512, 'hydralisk');
-        birth2.anims.play('hydra_birth').on('animationcomplete', () => {
-            let hydra = hydralisks.get(52, 512, 'hydralisk');
-            hydra.body.setCircle(16, 6, 13)
-            hydra.follower.t = 52/3744;
-            birth2.destroy();
-        }, this);
-        let birth3 = births.create(88, 512, 'hydralisk');
-        birth3.anims.play('hydra_birth').on('animationcomplete', () => {
-            let hydra = hydralisks.get(88, 512, 'hydralisk');
-            hydra.body.setCircle(16, 6, 13)
-            hydra.follower.t = 88/3744;
-            birth3.destroy();
-        }, this);
-        let birth4 = births.create(124, 512, 'hydralisk');
-        birth4.anims.play('hydra_birth').on('animationcomplete', () => {
-            let hydra = hydralisks.get(124, 512, 'hydralisk');
-            hydra.body.setCircle(16, 6, 13)
-            hydra.follower.t = 124/3744;
-            birth4.destroy();
-        }, this);
-        let birth5 = births.create(160, 512, 'hydralisk');
-        birth5.anims.play('hydra_birth').on('animationcomplete', () => {
-            let hydra = hydralisks.get(160, 512, 'hydralisk');
-            hydra.body.setCircle(16, 6, 13)
-            hydra.follower.t = 160/3744;
-            birth5.destroy();
-        }, this);
-        let birth6 = births.create(196, 512, 'hydralisk');
-        birth6.anims.play('hydra_birth').on('animationcomplete', () => {
-            let hydra = hydralisks.get(196, 512, 'hydralisk');
-            hydra.body.setCircle(16, 6, 13)
-            hydra.follower.t = 196/3744;
-            birth6.destroy();
-        }, this);
-        swarm++;
-        if (swarm > 2) {
-            waveNumber++;
-            clearInterval(nextWaveInterval);
+        if (gameFocus) {
+            if( (waveNumber === 10 && swarm === 0) || (waveNumber === 15 && swarm === 0) || (waveNumber === 20 && swarm < 2) || (waveNumber === 25 && swarm < 2) || (waveNumber === 30)){
+                let lurkerbirth = births.create(112, 400, 'lurker');
+                lurkerbirth.anims.play('lurker_birth').on('animationcomplete', () => {
+                    let lurker = lurkers.get(112, 400, 'lurker');
+                    lurker.body.setCircle(16, 19, 17)
+                    lurkerbirth.destroy();
+                })
+            }
+            let birth1 = births.create(16, 512, 'hydralisk');
+            game.sound.play('egg', sfx_config);
+            birth1.anims.play('hydra_birth').on('animationcomplete', () => {
+                game.sound.play('hydra_birth', sfx_config);
+                let hydra = hydralisks.get(16, 512, 'hydralisk');
+                hydra.body.setCircle(16, 6, 13)
+                hydra.follower.t = 16/3744;
+                birth1.destroy();
+            }, this);
+            let birth2 = births.create(52, 512, 'hydralisk');
+            birth2.anims.play('hydra_birth').on('animationcomplete', () => {
+                let hydra = hydralisks.get(52, 512, 'hydralisk');
+                hydra.body.setCircle(16, 6, 13)
+                hydra.follower.t = 52/3744;
+                birth2.destroy();
+            }, this);
+            let birth3 = births.create(88, 512, 'hydralisk');
+            birth3.anims.play('hydra_birth').on('animationcomplete', () => {
+                let hydra = hydralisks.get(88, 512, 'hydralisk');
+                hydra.body.setCircle(16, 6, 13)
+                hydra.follower.t = 88/3744;
+                birth3.destroy();
+            }, this);
+            let birth4 = births.create(124, 512, 'hydralisk');
+            birth4.anims.play('hydra_birth').on('animationcomplete', () => {
+                let hydra = hydralisks.get(124, 512, 'hydralisk');
+                hydra.body.setCircle(16, 6, 13)
+                hydra.follower.t = 124/3744;
+                birth4.destroy();
+            }, this);
+            let birth5 = births.create(160, 512, 'hydralisk');
+            birth5.anims.play('hydra_birth').on('animationcomplete', () => {
+                let hydra = hydralisks.get(160, 512, 'hydralisk');
+                hydra.body.setCircle(16, 6, 13)
+                hydra.follower.t = 160/3744;
+                birth5.destroy();
+            }, this);
+            let birth6 = births.create(196, 512, 'hydralisk');
+            birth6.anims.play('hydra_birth').on('animationcomplete', () => {
+                let hydra = hydralisks.get(196, 512, 'hydralisk');
+                hydra.body.setCircle(16, 6, 13)
+                hydra.follower.t = 196/3744;
+                birth6.destroy();
+            }, this);
+            swarm++;
+            if (swarm > 2) {
+                waveNumber++;
+                clearInterval(nextWaveInterval);
+            }
         }
     }, birthTime);
 }
@@ -239,7 +267,18 @@ class Tower extends Phaser.GameObjects.Sprite {
     
     fire() {
         if (this.target.active) {
-            game.sound.play('bullet', sfx_config);
+            if (bulletSoundsPlayed < 16) {
+                bulletSoundsPlayed++;
+                let bulletSound = game.sound.add('bullet', sfx_config);
+                bulletSound.play();
+                bulletSound.once('ended', () => {
+                    bulletSoundsPlayed--;
+                });
+                bulletSound.once('pause', () => {
+                    bulletSoundsPlayed--;
+                    bulletSound.destroy()
+                });
+            }
             let bullet = bullets.get(this.x, this.y, 'bullet_single', 0);
             bullet.body.setCircle(2);
             bullet.target = this.target;
@@ -709,14 +748,24 @@ class GameScene extends Phaser.Scene {
         }, this);
         
         game.events.on('blur', function() {
-            this.sound.pauseAll();
-            sfx_config.mute = true;
-    
+            this.scene.pause();
+            this.scene.pause('HUD');
+
+            gameFocus = false;
             musicOn = false;
             sfxOn = false;
-    
+            
+            this.sound.pauseAll();
+            sfx_config.mute = true;
+            
             sfxButton.setFill('firebrick').setStroke('gold').setAlpha(0.33);
             musicButton.setFill('firebrick').setStroke('gold').setAlpha(0.33);
+        }, this);
+        game.events.on('focus', function() {
+            this.scene.resume();
+            this.scene.resume('HUD');
+
+            gameFocus = true;
         }, this);
     }
     

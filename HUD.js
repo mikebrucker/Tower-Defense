@@ -143,71 +143,73 @@ class HUD extends Phaser.Scene {
         min = 0;
         sec = 16;
         timer = setInterval( () => {
-            sec--;
-            if (sec < 5 || hydralisks.countActive(true) > 6 || sec > 40) {
-                nextWaveButton.setFill('firebrick').setStroke('gold').setAlpha(0.33);
-                clickNextWave = false;
-            } else if (hydralisks.countActive(true) < 7) {
-                nextWaveButton.setFill('gold').setStroke('firebrick').setAlpha(1);
-                clickNextWave = true;
-            }
-            if (sec < 0) {
-                min--;
-                sec = 59;
-            }
-            if (min < 0) {
-                timerDisplay.setText('');
-                min = 0;
-                sec = 46;
-                if (waveNumber < 31) {
-                    if (waveNumber % 4 === 0) {
-                        hydraliskHPIncrease += 2;
-                    }
-                    if (waveNumber > 1) {
-                        hydraliskHP += hydraliskHPIncrease;
-                        if (hydraliskSpeed < 100) {
-                            hydraliskSpeed += 1;
-                        }
-                        if (birthTime > 1840) {
-                            birthTime -= 72;
-                        }    
-                    }
-                    if ((waveNumber - 1) % 5 === 0) {
-                        lurkerHP += lurkerHPIncrease;
-                        lurkerSpeed += 2;
-                    }
-                    nextWave();
-                    waveInfoText.setText(`Wave ${waveNumber}`);
-                    waveNumberDisplay.setText(`Wave: ${waveNumber}`);
-                    hydraliskHPDisplay.setText(`Hydralisk HP: ${hydraliskHP}`);
-                    hydraliskSpeedDisplay.setText(`Hydralisk Speed: ${hydraliskSpeed}`);    
+            if (gameFocus) {
+                sec--;
+                if (sec < 5 || hydralisks.countActive(true) > 6 || sec > 40) {
+                    nextWaveButton.setFill('firebrick').setStroke('gold').setAlpha(0.33);
+                    clickNextWave = false;
+                } else if (hydralisks.countActive(true) < 7) {
+                    nextWaveButton.setFill('gold').setStroke('firebrick').setAlpha(1);
+                    clickNextWave = true;
                 }
-                this.add.tween({
-                    targets: waveInfoText,
-                    ease: 'Sine.easeInOut',
-                    duration: 5000,
-                    alpha: {
-                        getStart: () => 1,
-                        getEnd: () => 0
+                if (sec < 0) {
+                    min--;
+                    sec = 59;
+                }
+                if (min < 0) {
+                    timerDisplay.setText('');
+                    min = 0;
+                    sec = 46;
+                    if (waveNumber < 31) {
+                        if (waveNumber % 4 === 0) {
+                            hydraliskHPIncrease += 2;
+                        }
+                        if (waveNumber > 1) {
+                            hydraliskHP += hydraliskHPIncrease;
+                            if (hydraliskSpeed < 100) {
+                                hydraliskSpeed += 1;
+                            }
+                            if (birthTime > 1840) {
+                                birthTime -= 72;
+                            }    
+                        }
+                        if ((waveNumber - 1) % 5 === 0) {
+                            lurkerHP += lurkerHPIncrease;
+                            lurkerSpeed += 2;
+                        }
+                        nextWave();
+                        waveInfoText.setText(`Wave ${waveNumber}`);
+                        waveNumberDisplay.setText(`Wave: ${waveNumber}`);
+                        hydraliskHPDisplay.setText(`Hydralisk HP: ${hydraliskHP}`);
+                        hydraliskSpeedDisplay.setText(`Hydralisk Speed: ${hydraliskSpeed}`);    
                     }
-                });
-            } else if (sec < 10) {
-                timerDisplay.setText(`${min}:0${sec}`);
-            } else {
-                timerDisplay.setText(`${min}:${sec}`);
-            }
-            if (sec > 0 && sec < 4) {
-                this.sound.play('beep', sfx_config);
-                countDownText.setText(sec)
-                this.add.tween({
-                    targets: countDownText,
-                    ease: 'Sine.easeInOut',
-                    duration: 1500,
-                    alpha: {
-                        getStart: () => 1,
-                        getEnd: () => 0
-                    }
-                });
+                    this.add.tween({
+                        targets: waveInfoText,
+                        ease: 'Sine.easeInOut',
+                        duration: 5000,
+                        alpha: {
+                            getStart: () => 1,
+                            getEnd: () => 0
+                        }
+                    });
+                } else if (sec < 10) {
+                    timerDisplay.setText(`${min}:0${sec}`);
+                } else {
+                    timerDisplay.setText(`${min}:${sec}`);
+                }
+                if (sec > 0 && sec < 4) {
+                    this.sound.play('beep', sfx_config);
+                    countDownText.setText(sec)
+                    this.add.tween({
+                        targets: countDownText,
+                        ease: 'Sine.easeInOut',
+                        duration: 1500,
+                        alpha: {
+                            getStart: () => 1,
+                            getEnd: () => 0
+                        }
+                    });
+                }
             }
         }, 1000);
     }
