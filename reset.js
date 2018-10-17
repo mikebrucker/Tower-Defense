@@ -21,6 +21,7 @@ class Reset extends Phaser.Scene {
         controls,
         gameFocus = true,
         gameOver = false,
+        pauseOn = false,
         musicOn = true,
         sfxOn = true,
         build = false,
@@ -50,6 +51,7 @@ class Reset extends Phaser.Scene {
         nextWaveButton,
         musicButton,
         sfxButton,
+        pauseButton,
         
         buildGraphic,
         logWorldLayer,
@@ -61,6 +63,7 @@ class Reset extends Phaser.Scene {
         buildInfoText,
         hydralisksEscapedInfoText,
         gameOverText,
+        pauseText,
         
         births,
         hydralisks,
@@ -75,14 +78,14 @@ class Reset extends Phaser.Scene {
         numberOfTowers = 0,
         waveNumber = 1,
         kills = 0,
-        lurkerHP = 1536,
-        lurkerSpeed = 36,
-        lurkerHPIncrease = 512,
+        lurkerHP = 1024,
+        lurkerSpeed = 30,
+        lurkerHPIncrease = 256,
         hydraliskHP = 96,
         hydraliskHPIncrease = 16,
         hydraliskSpeed = 40,
         hydralisksEscaped = 0,
-        birthTime = 3496;
+        birthTime = 3496;        
         
         this.scene.start('GameScene');
     }
