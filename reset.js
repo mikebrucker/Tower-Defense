@@ -78,7 +78,7 @@ class Reset extends Phaser.Scene {
         lurkerHP = 1536,
         lurkerSpeed = 36,
         lurkerHPIncrease = 512,
-        hydraliskHP = 112,
+        hydraliskHP = 96,
         hydraliskHPIncrease = 16,
         hydraliskSpeed = 40,
         hydralisksEscaped = 0,
