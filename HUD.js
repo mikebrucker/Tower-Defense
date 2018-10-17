@@ -40,7 +40,8 @@ class HUD extends Phaser.Scene {
         waveInfoText = this.add.text(496, 300, '', {fontSize: '60px', fill: 'firebrick', fontFamily: 'Arial', stroke: 'gold', strokeThickness: 3  }).setOrigin(0.5);
         countDownText = this.add.text(496, 300, '', {fontSize: '160px', fill: 'firebrick', fontFamily: 'Arial', stroke: 'gold', strokeThickness: 3  }).setOrigin(0.5);
         hydralisksEscapedInfoText = this.add.text(496, 500, '', {fontSize: '50px', fill: 'firebrick', fontFamily: 'Arial', stroke: 'gold', strokeThickness: 3  }).setOrigin(0.5);
-        
+        pauseText = this.add.text(496, 300, '', {fontSize: '60px', fill: 'firebrick', fontFamily: 'Arial', stroke: 'gold', strokeThickness: 3 }).setOrigin(0.5).setScrollFactor(0);
+
         demolishButton = this.add.text(4, 573, 'Demolish', {fontSize: '40px', fill: 'firebrick', fontFamily: 'Arial', stroke: 'gold', strokeThickness: 6 })
         .setInteractive().on('pointerdown', function() {
             build = false;
@@ -102,7 +103,27 @@ class HUD extends Phaser.Scene {
             }
         }, this).setOrigin(0.5);
         
-        musicButton = this.add.text(666, 562, 'Music', {fontSize: '18px', fill: 'gold', fontFamily: 'Arial', stroke: 'firebrick', strokeThickness: 3})
+        pauseButton = this.add.text(712, 582, 'Pause', {fontSize: '18px', fill: 'firebrick', fontFamily: 'Arial', stroke: 'gold', strokeThickness: 3 })
+        .setInteractive().on('pointerdown', function() {
+            pauseOn = !pauseOn;
+            if (pauseOn) {
+                this.scene.pause('GameScene');
+    
+                gameFocus = false;
+    
+                pauseButton.setFill('gold').setStroke('firebrick').setAlpha(1);
+                pauseText.setText('Game Paused')
+            } else {
+                this.scene.resume('GameScene');
+    
+                gameFocus = true;
+    
+                pauseButton.setFill('firebrick').setStroke('gold').setAlpha(0.33);
+                pauseText.setText('')
+            }
+        }, this).setOrigin(0.5).setAlpha(0.33);
+
+        musicButton = this.add.text(628, 562, 'Music', {fontSize: '18px', fill: 'gold', fontFamily: 'Arial', stroke: 'firebrick', strokeThickness: 3})
         .setInteractive().on('pointerdown', function() {
             musicOn = !musicOn;
             if (musicOn) {
@@ -114,7 +135,7 @@ class HUD extends Phaser.Scene {
             }
         }, this).setOrigin(0.5);
 
-        sfxButton = this.add.text(666, 582, 'Sound FX', {fontSize: '18px', fill: 'gold', fontFamily: 'Arial', stroke: 'firebrick', strokeThickness: 3})
+        sfxButton = this.add.text(628, 582, 'Sound FX', {fontSize: '18px', fill: 'gold', fontFamily: 'Arial', stroke: 'firebrick', strokeThickness: 3})
         .setInteractive().on('pointerdown', function() {
             sfxOn = !sfxOn;
             if (sfxOn) {

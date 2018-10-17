@@ -14,6 +14,7 @@ bulletSoundsPlayed = 0,
 controls,
 gameFocus = true,
 gameOver = false,
+pauseOn = false,
 musicOn = true,
 sfxOn = true,
 build = false,
@@ -43,6 +44,7 @@ upgradeButton,
 nextWaveButton,
 musicButton,
 sfxButton,
+pauseButton,
 
 buildGraphic,
 logWorldLayer,
@@ -54,6 +56,7 @@ countDownText,
 buildInfoText,
 hydralisksEscapedInfoText,
 gameOverText,
+pauseText,
 
 births,
 hydralisks,
@@ -110,7 +113,7 @@ function nextWave() {
             game.sound.play('lurker_birth', sfx_config);
             lurker.body.setCircle(16, 19, 17)
             lurkerbirth.destroy();
-        })
+        });
     }
     let birth1 = births.create(16, 512, 'hydralisk');
     game.sound.play('egg', sfx_config);
@@ -164,7 +167,7 @@ function nextWave() {
                     let lurker = lurkers.get(112, 400, 'lurker');
                     lurker.body.setCircle(16, 19, 17)
                     lurkerbirth.destroy();
-                })
+                });
             }
             let birth1 = births.create(16, 512, 'hydralisk');
             game.sound.play('egg', sfx_config);
@@ -749,7 +752,6 @@ class GameScene extends Phaser.Scene {
         
         game.events.on('blur', function() {
             this.scene.pause();
-            this.scene.pause('HUD');
 
             gameFocus = false;
             musicOn = false;
@@ -762,10 +764,11 @@ class GameScene extends Phaser.Scene {
             musicButton.setFill('firebrick').setStroke('gold').setAlpha(0.33);
         }, this);
         game.events.on('focus', function() {
-            this.scene.resume();
-            this.scene.resume('HUD');
-
-            gameFocus = true;
+            if (!pauseOn) {
+                this.scene.resume();
+    
+                gameFocus = true;
+            }
         }, this);
     }
     
