@@ -196,7 +196,7 @@ class HUD extends Phaser.Scene {
                         }
                         if ((waveNumber - 1) % 5 === 0) {
                             lurkerHP += lurkerHPIncrease;
-                            lurkerSpeed += 2;
+                            lurkerSpeed += 3;
                         }
                         nextWave();
                         waveInfoText.setText(`Wave ${waveNumber}`);
