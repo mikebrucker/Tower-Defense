@@ -194,7 +194,7 @@ class HUD extends Phaser.Scene {
                                 birthTime -= 72;
                             }    
                         }
-                        if ((waveNumber - 1) % 5 === 0) {
+                        if ((waveNumber - 1) % 5 === 0 && waveNumber > 1) {
                             lurkerHP += lurkerHPIncrease;
                             lurkerSpeed += 2;
                         }
