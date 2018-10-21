@@ -66,19 +66,18 @@ headtowers,
 bullets,
 
 upgradeCost = 1,
-resources = 12,
+resources = 10,
 towerDamage = 10,
 numberOfTowers = 0,
-waveNumber = 1,
+waveNumber = 0,
 kills = 0,
-lurkerHP = 1024,
-lurkerSpeed = 30,
-lurkerHPIncrease = 256,
-hydraliskHP = 96,
-hydraliskHPIncrease = 16,
-hydraliskSpeed = 40,
-hydralisksEscaped = 0,
-birthTime = 3496;
+lurkerHP = 512,
+lurkerSpeed = 80,
+lurkerHPIncrease = 128,
+hydraliskHP = 60,
+hydraliskHPIncrease = 9,
+hydraliskSpeed = 100,
+hydralisksEscaped = 0;
 
 // cheat codes
 function somethingForNothing() {
@@ -107,121 +106,62 @@ function showMeTheMoney() {
 //
 
 function nextWave() {
-    let swarm = 0;
-    if (waveNumber % 5 === 0) {
-        let lurkerbirth = births.create(112, 400, 'lurker');
-        lurkerbirth.anims.play('lurker_birth').on('animationcomplete', () => {
-            let lurker = lurkers.get(112, 400, 'lurker');
-            game.sound.play('lurker_birth', sfx_config);
-            lurker.body.setCircle(16, 19, 17)
-            lurkerbirth.destroy();
-        });
-    }
-    let birth1 = births.create(16, 512, 'hydralisk');
+    let birthTime = 0;
     game.sound.play('egg', sfx_config);
-    birth1.anims.play('hydra_birth').on('animationcomplete', () => {
-        game.sound.play('hydra_birth', sfx_config);
-        let hydra = hydralisks.get(16, 512, 'hydralisk')
-        hydra.body.setCircle(16, 6, 13)
-        hydra.follower.t = 16/3744;
-        birth1.destroy();
-    }, this);
-    let birth2 = births.create(52, 512, 'hydralisk');
-    birth2.anims.play('hydra_birth').on('animationcomplete', () => {
-        let hydra = hydralisks.get(52, 512, 'hydralisk')
-        hydra.body.setCircle(16, 6, 13)
-        hydra.follower.t = 52/3744;
-        birth2.destroy();
-    }, this);
-    let birth3 = births.create(88, 512, 'hydralisk');
-    birth3.anims.play('hydra_birth').on('animationcomplete', () => {
-        let hydra = hydralisks.get(88, 512, 'hydralisk')
-        hydra.body.setCircle(16, 6, 13)
-        hydra.follower.t = 88/3744;
-        birth3.destroy();
-    }, this);
-    let birth4 = births.create(124, 512, 'hydralisk');
-    birth4.anims.play('hydra_birth').on('animationcomplete', () => {
-        let hydra = hydralisks.get(124, 512, 'hydralisk')
-        hydra.body.setCircle(16, 6, 13)
-        hydra.follower.t = 124/3744;
-        birth4.destroy();
-    }, this);
-    let birth5 = births.create(160, 512, 'hydralisk');
-    birth5.anims.play('hydra_birth').on('animationcomplete', () => {
-        let hydra = hydralisks.get(160, 512, 'hydralisk')
-        hydra.body.setCircle(16, 6, 13)
-        hydra.follower.t = 160/3744;
-        birth5.destroy();
-    }, this);
-    let birth6 = births.create(196, 512, 'hydralisk');
-    birth6.anims.play('hydra_birth').on('animationcomplete', () => {
-        let hydra = hydralisks.get(196, 512, 'hydralisk')
-        hydra.body.setCircle(16, 6, 13)
-        hydra.follower.t = 196/3744;
-        birth6.destroy();
-    }, this);
-    nextWaveInterval = setInterval( () => {
-        if (gameFocus) {
-            if( (waveNumber === 10 && swarm === 0) || (waveNumber === 15 && swarm === 0) || (waveNumber === 20 && swarm < 2) || (waveNumber === 25 && swarm < 2) || (waveNumber === 30)){
-                let lurkerbirth = births.create(112, 400, 'lurker');
-                lurkerbirth.anims.play('lurker_birth').on('animationcomplete', () => {
-                    let lurker = lurkers.get(112, 400, 'lurker');
-                    lurker.body.setCircle(16, 19, 17)
-                    lurkerbirth.destroy();
-                });
+    if (waveNumber % 5 === 0) {
+        birthTime = 2500;
+        let lurkerbirth = births.create(-100, 332, 'lurker');
+        lurkerbirth.anims.play('lurker_birth').on('animationcomplete', () => {
+            game.sound.play('lurker_birth', sfx_config);
+            lurkerbirth.destroy;
+        }, this);
+
+        let bossWave = waveNumber / 5;
+        let j = 0;
+        let k = 0;
+        for (let i = 0; i < bossWave; i++) {
+            if (i === 3) {
+                k = 90;
             }
-            let birth1 = births.create(16, 512, 'hydralisk');
-            game.sound.play('egg', sfx_config);
-            birth1.anims.play('hydra_birth').on('animationcomplete', () => {
-                game.sound.play('hydra_birth', sfx_config);
-                let hydra = hydralisks.get(16, 512, 'hydralisk');
-                hydra.body.setCircle(16, 6, 13)
-                hydra.follower.t = 16/3744;
-                birth1.destroy();
+            let lurkerbirth = births.create(151 - k, (j * 90) + 512, 'lurker');
+            lurkerbirth.anims.play('lurker_birth').on('animationcomplete', () => {
+                let lurker = lurkers.get(lurkerbirth.x, lurkerbirth.y, 'lurker');
+                lurker.follower.t = (450 - (i * 90)) / lurkerpath.getLength();
+                lurker.body.setCircle(16, 19, 17)
+                lurkerbirth.destroy();
             }, this);
-            let birth2 = births.create(52, 512, 'hydralisk');
-            birth2.anims.play('hydra_birth').on('animationcomplete', () => {
-                let hydra = hydralisks.get(52, 512, 'hydralisk');
-                hydra.body.setCircle(16, 6, 13)
-                hydra.follower.t = 52/3744;
-                birth2.destroy();
-            }, this);
-            let birth3 = births.create(88, 512, 'hydralisk');
-            birth3.anims.play('hydra_birth').on('animationcomplete', () => {
-                let hydra = hydralisks.get(88, 512, 'hydralisk');
-                hydra.body.setCircle(16, 6, 13)
-                hydra.follower.t = 88/3744;
-                birth3.destroy();
-            }, this);
-            let birth4 = births.create(124, 512, 'hydralisk');
-            birth4.anims.play('hydra_birth').on('animationcomplete', () => {
-                let hydra = hydralisks.get(124, 512, 'hydralisk');
-                hydra.body.setCircle(16, 6, 13)
-                hydra.follower.t = 124/3744;
-                birth4.destroy();
-            }, this);
-            let birth5 = births.create(160, 512, 'hydralisk');
-            birth5.anims.play('hydra_birth').on('animationcomplete', () => {
-                let hydra = hydralisks.get(160, 512, 'hydralisk');
-                hydra.body.setCircle(16, 6, 13)
-                hydra.follower.t = 160/3744;
-                birth5.destroy();
-            }, this);
-            let birth6 = births.create(196, 512, 'hydralisk');
-            birth6.anims.play('hydra_birth').on('animationcomplete', () => {
-                let hydra = hydralisks.get(196, 512, 'hydralisk');
-                hydra.body.setCircle(16, 6, 13)
-                hydra.follower.t = 196/3744;
-                birth6.destroy();
-            }, this);
-            swarm++;
-            if (swarm > 2) {
-                waveNumber++;
-                clearInterval(nextWaveInterval);
+            if (i < 2) {
+                j--;
+            } else if (i > 2) {
+                j++;
             }
         }
-    }, birthTime);
+    }
+    setTimeout( () => {
+        let j = 0;
+        let k = 0;
+        let birth = births.create(-100, 512, 'hydralisk');
+        birth.anims.play('hydra_birth').on('animationcomplete', () => {
+            game.sound.play('hydra_birth', sfx_config);
+            birth.destroy();
+        }, this);
+        for (let i = 0; i < 24; i++) {
+            if (i % 4 === 0 && i > 0) {
+                j = 0
+            }
+            if (i % 4 === 0 && i > 0) {
+                k++;
+            }
+            let birth = births.create((j * 36) + 52, (k * 36) + 332, 'hydralisk');
+            birth.anims.play('hydra_birth').on('animationcomplete', () => {
+                let hydra = hydralisks.get(birth.x, birth.y, 'hydralisk')
+                hydra.follower.t = (i * 36) / path.getLength();
+                hydra.body.setCircle(16, 6, 13)
+                birth.destroy();
+            }, this);
+            j++;
+        }
+    }, birthTime)
 }
 
 function damageHydralisks(hydralisk, bullet) {
@@ -265,6 +205,7 @@ class Tower extends Phaser.GameObjects.Sprite {
                 this.anims.play('headtower_ul', true);
             }
         }
+
         if (!this.target || !this.target.active || Phaser.Math.Distance.Between(this.x, this.y, this.target.x, this.target.y) >= this.range) {
             this.target = this.getEnemy(this.range);
         }
@@ -295,14 +236,18 @@ class Tower extends Phaser.GameObjects.Sprite {
         let enemyHydras = hydralisks.getChildren();
         let enemyLurkers = lurkers.getChildren();
         let enemiesInRange = [];
-        for (let i = 0; i < enemyHydras.length; i++) {       
-            if (enemyHydras[i].active && Phaser.Math.Distance.Between(this.x, this.y, enemyHydras[i].x, enemyHydras[i].y) <= this.range) {
-                enemiesInRange.push([Phaser.Math.Distance.Between(this.x, this.y, enemyHydras[i].x, enemyHydras[i].y), enemyHydras[i]]);
+        for (let hydra of enemyHydras) {
+            if (hydra.x > 223) {
+                if (hydra.active && Phaser.Math.Distance.Between(this.x, this.y, hydra.x, hydra.y) <= this.range) {
+                    enemiesInRange.push([Phaser.Math.Distance.Between(this.x, this.y, hydra.x, hydra.y), hydra]);
+                }
             }
         }
-        for (let i = 0; i < enemyLurkers.length; i++) {       
-            if (enemyLurkers[i].active && Phaser.Math.Distance.Between(this.x, this.y, enemyLurkers[i].x, enemyLurkers[i].y) <= this.range) {
-                enemiesInRange.push([Phaser.Math.Distance.Between(this.x, this.y, enemyLurkers[i].x, enemyLurkers[i].y), enemyLurkers[i]]);
+        for (let lurker of enemyLurkers) {
+            if (lurker.x > 223) {
+                if (lurker.active && Phaser.Math.Distance.Between(this.x, this.y, lurker.x, lurker.y) <= this.range) {
+                    enemiesInRange.push([Phaser.Math.Distance.Between(this.x, this.y, lurker.x, lurker.y), lurker]);
+                }
             }
         }
         enemiesInRange.sort(function([a], [b]) { return a - b });
@@ -352,14 +297,14 @@ class Hydralisk extends Phaser.GameObjects.Sprite {
         let prevX = this.follower.vec.x,
         prevY = this.follower.vec.y;
 
-        this.follower.t += hydraliskSpeed/100000;
+        this.follower.t += (hydraliskSpeed / (path.getLength() * 60));
     
         path.getPoint(this.follower.t, this.follower.vec);
         
         this.setPosition(this.follower.vec.x, this.follower.vec.y);
         
         if (this.follower.vec.x > prevX) {
-            if (this.follower.vec.y > prevY) {
+            if (this.follower.vec.y > prevY + 2) {
                 // if (Math.abs(this.body.velocity.x) < Math.abs(this.body.velocity.y)) {
                 //     this.anims.play('hydra_dldiag', true).setFlipX(false);
                 // } else if (Math.abs(this.body.velocity.x) > Math.abs(this.body.velocity.y)) {
@@ -367,7 +312,7 @@ class Hydralisk extends Phaser.GameObjects.Sprite {
                 // } else {
                     this.anims.play('hydra_ddiag', true).setFlipX(false);
                 // }
-            } else if (this.follower.vec.y < prevY) {
+            } else if (this.follower.vec.y < prevY - 2) {
                 // if (Math.abs(this.body.velocity.x) < Math.abs(this.body.velocity.y)) {
                 //     this.anims.play('hydra_uhdiag', true).setFlipX(false);
                 // } else if (Math.abs(this.body.velocity.x) > Math.abs(this.body.velocity.y)) {
@@ -379,7 +324,7 @@ class Hydralisk extends Phaser.GameObjects.Sprite {
                 this.anims.play('hydra_side', true).setFlipX(false);
             }
         } else if (this.follower.vec.x < prevX) {
-            if (this.follower.vec.y > prevY) {
+            if (this.follower.vec.y > prevY + 2) {
             //     if (Math.abs(this.body.velocity.x) < Math.abs(this.body.velocity.y)) {
             //         this.anims.play('hydra_dldiag', true).setFlipX(true);
             //     } else if (Math.abs(this.body.velocity.x) > Math.abs(this.body.velocity.y)) {
@@ -387,7 +332,7 @@ class Hydralisk extends Phaser.GameObjects.Sprite {
             //     } else {
                     this.anims.play('hydra_ddiag', true).setFlipX(true);
             //     }
-            } else if (this.follower.vec.y < prevY) {
+            } else if (this.follower.vec.y < prevY - 2) {
             //     if (Math.abs(this.body.velocity.x) < Math.abs(this.body.velocity.y)) {
             //         this.anims.play('hydra_uhdiag', true).setFlipX(true);
             //     } else if (Math.abs(this.body.velocity.x) > Math.abs(this.body.velocity.y)) {
@@ -395,7 +340,7 @@ class Hydralisk extends Phaser.GameObjects.Sprite {
             //     } else {
                     this.anims.play('hydra_udiag', true).setFlipX(true);
             //     }
-            // } else {
+            } else {
                 this.anims.play('hydra_side', true).setFlipX(true);
             }
         } else {
@@ -473,7 +418,7 @@ class Lurker extends Hydralisk {
         let prevX = this.follower.vec.x,
         prevY = this.follower.vec.y;
     
-        this.follower.t += lurkerSpeed/100000;
+        this.follower.t += (lurkerSpeed / (lurkerpath.getLength() * 60));
     
         lurkerpath.getPoint(this.follower.t, this.follower.vec);
         
@@ -516,7 +461,7 @@ class Lurker extends Hydralisk {
             //     } else {
                     this.anims.play('lurker_udiag', true).setFlipX(true);
             //     }
-            // } else {
+            } else {
                 this.anims.play('lurker_side', true).setFlipX(true);
             }
         } else {
@@ -562,12 +507,12 @@ class Lurker extends Hydralisk {
             killsDisplay.setText(`Kills: ${kills}`)
             if (kills % 8 === 0) {
                 resources += 1;
-                resourcesDisplay.setText(`Resources: ${resources}`)
-                if (resources >= upgradeCost) {
-                    upgradeButton.setFill('gold').setStroke('firebrick').setAlpha(1);
-                } else {
-                    upgradeButton.setFill('firebrick').setStroke('gold').setAlpha(0.33);
-                }
+            }
+            resourcesDisplay.setText(`Resources: ${resources}`)
+            if (resources >= upgradeCost) {
+                upgradeButton.setFill('gold').setStroke('firebrick').setAlpha(1);
+            } else {
+                upgradeButton.setFill('firebrick').setStroke('gold').setAlpha(0.33);
             }
         }
     }
@@ -601,7 +546,14 @@ class GameScene extends Phaser.Scene {
         worldLayer.setCollisionBetween(259, 268, true, 'World');
         worldLayer.setCollisionBetween(519, 534, true, 'World');
         
-        path = this.add.path(0, 512);
+        path = this.add.path(124, 440);
+        path.lineTo(124, 368);
+        path.lineTo(88, 368);
+        path.lineTo(88, 476);
+        path.lineTo(160, 476);
+        path.lineTo(160, 332);
+        path.lineTo(52, 332);
+        path.lineTo(52, 512);
         path.lineTo(432, 512);
         path.lineTo(432, 288);
         path.lineTo(656, 288);
@@ -618,8 +570,10 @@ class GameScene extends Phaser.Scene {
         path.lineTo(1488, 288);
         path.lineTo(1920, 288);
 
-        lurkerpath = this.add.path(112, 400);
-        lurkerpath.lineTo(112, 512);
+        lurkerpath = this.add.path(61, 512);
+        lurkerpath.lineTo(61, 332);
+        lurkerpath.lineTo(151, 332);
+        lurkerpath.lineTo(151, 512);
         lurkerpath.lineTo(432, 512);
         lurkerpath.lineTo(432, 288);
         lurkerpath.lineTo(656, 288);
@@ -829,7 +783,7 @@ class GameScene extends Phaser.Scene {
         }
 
         if (!gameOver) {
-            if ( (waveNumber > 30 && sec < 40 && hydralisks.countActive(true) === 0 && lurkers.countActive(true) === 0) || hydralisksEscaped > 19) {
+            if ( (waveNumber >= 30 && sec < 40 && hydralisks.countActive(true) === 0 && lurkers.countActive(true) === 0) || hydralisksEscaped > 19) {
                 gameOver = true;
                 this.scene.launch('GameOver');
                 if (hydralisksEscaped > 19) {

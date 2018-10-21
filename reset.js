@@ -73,19 +73,18 @@ class Reset extends Phaser.Scene {
         bullets,
         
         upgradeCost = 1,
-        resources = 12,
+        resources = 10,
         towerDamage = 10,
         numberOfTowers = 0,
-        waveNumber = 1,
+        waveNumber = 0,
         kills = 0,
-        lurkerHP = 1024,
-        lurkerSpeed = 30,
-        lurkerHPIncrease = 256,
-        hydraliskHP = 96,
-        hydraliskHPIncrease = 16,
-        hydraliskSpeed = 40,
-        hydralisksEscaped = 0,
-        birthTime = 3496;        
+        lurkerHP = 512,
+        lurkerSpeed = 80,
+        lurkerHPIncrease = 128,
+        hydraliskHP = 60,
+        hydraliskHPIncrease = 9,
+        hydraliskSpeed = 100,
+        hydralisksEscaped = 0;
         
         this.scene.start('GameScene');
     }

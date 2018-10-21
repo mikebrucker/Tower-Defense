@@ -26,7 +26,7 @@ class HUD extends Phaser.Scene {
 
         towerDamageDisplay = this.add.text(4, 0, `Tower Damage: ${towerDamage}`, {fontSize: '20px', fill: 'gold', fontFamily: 'Arial', stroke: 'firebrick', strokeThickness: 3 }).setOrigin(0);
         numberOfTowersDisplay = this.add.text(4, 24, `Towers: ${numberOfTowers}`, {fontSize: '20px', fill: 'gold', fontFamily: 'Arial', stroke: 'firebrick', strokeThickness: 3 }).setOrigin(0);
-        waveNumberDisplay = this.add.text(4, 48, `Wave: ${waveNumber}`, {fontSize: '20px', fill: 'gold', fontFamily: 'Arial', stroke: 'firebrick', strokeThickness: 3 }).setOrigin(0);
+        waveNumberDisplay = this.add.text(4, 48, `Wave: 1`, {fontSize: '20px', fill: 'gold', fontFamily: 'Arial', stroke: 'firebrick', strokeThickness: 3 }).setOrigin(0);
 
         resourcesDisplay = this.add.text(324, 0, `Resources: ${resources}`, {fontSize: '20px', fill: 'gold', fontFamily: 'Arial', stroke: 'firebrick', strokeThickness: 3 }).setOrigin(0.5, 0);
         timerDisplay = this.add.text(496, 0, '', {fontSize: '20px', fill: 'gold', fontFamily: 'Arial', stroke: 'firebrick', strokeThickness: 3 }).setOrigin(0.5, 0);
@@ -78,10 +78,10 @@ class HUD extends Phaser.Scene {
         upgradeButton = this.add.text(424, 573, 'Upgrade', {fontSize: '40px', fill: 'gold', fontFamily: 'Arial', stroke: 'firebrick', strokeThickness: 6 })
         .setInteractive().on('pointerdown', function() {
             if (resources >= upgradeCost) {
+                towerDamage++;
                 for (let tower of headtowers.getChildren()) {
-                    tower.damage += 2;
+                    tower.damage = towerDamage;
                 }
-                towerDamage += 2;
                 this.sound.play('upgrade', sfx_config);
                 resources -= upgradeCost;
                 upgradeCost++;
@@ -178,23 +178,23 @@ class HUD extends Phaser.Scene {
                     sec = 59;
                 }
                 if (min < 0) {
+                    waveNumber++;
                     timerDisplay.setText('');
                     min = 0;
                     sec = 46;
                     if (waveNumber < 31) {
-                        if (waveNumber % 4 === 0) {
-                            hydraliskHPIncrease += 2;
-                        }
                         if (waveNumber > 1) {
-                            hydraliskHP += hydraliskHPIncrease;
-                            if (hydraliskSpeed < 100) {
-                                hydraliskSpeed += 1;
+                            if (waveNumber % 2 === 0) {
+                                hydraliskHPIncrease++;
                             }
-                            if (birthTime > 1840) {
-                                birthTime -= 72;
-                            }    
+                            hydraliskHP += hydraliskHPIncrease;
+                            if (waveNumber > 20) {
+                                hydraliskSpeed += 2;
+                            } else {
+                                hydraliskSpeed++;
+                            }
                         }
-                        if ((waveNumber - 1) % 5 === 0 && waveNumber > 1) {
+                        if (waveNumber % 5 === 0 && waveNumber > 5) {
                             lurkerHP += lurkerHPIncrease;
                             lurkerSpeed += 2;
                         }
