@@ -113,7 +113,7 @@ class HUD extends Phaser.Scene {
     
                 pauseButton.setFill('gold').setStroke('firebrick').setAlpha(1);
                 pauseText.setText('Game Paused')
-            } else {
+            } else {              
                 this.scene.resume('GameScene');
     
                 gameFocus = true;
@@ -188,7 +188,7 @@ class HUD extends Phaser.Scene {
                                 hydraliskHPIncrease++;
                             }
                             hydraliskHP += hydraliskHPIncrease;
-                            if (waveNumber > 20) {
+                            if (waveNumber > 15) {
                                 hydraliskSpeed += 2;
                             } else {
                                 hydraliskSpeed++;
@@ -197,6 +197,7 @@ class HUD extends Phaser.Scene {
                         if (waveNumber % 5 === 0 && waveNumber > 5) {
                             lurkerHP += lurkerHPIncrease;
                             lurkerSpeed += 2;
+                            lurkerHPIncrease += lurkerHPIncrease / 2
                         }
                         nextWave();
                         waveInfoText.setText(`Wave ${waveNumber}`);

@@ -85,7 +85,7 @@ class Reset extends Phaser.Scene {
         hydraliskHPIncrease = 9,
         hydraliskSpeed = 100,
         hydralisksEscaped = 0;
-        
+
         this.scene.start('GameScene');
     }
 }

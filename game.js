@@ -177,15 +177,16 @@ class Tower extends Phaser.GameObjects.Sprite {
         this.hp = 10;
         this.damage = towerDamage;  
         this.name = 'tower';
-        this.timeToShoot = 0;
+        this.timeToShoot = 60;
         this.range = 200;
         this.target = false;
     }
     
     update(time, delta) {
-        if (time > this.timeToShoot && this.target.active) {      
+        this.timeToShoot++;
+        if (this.timeToShoot > 59 && this.target.active) {      
             this.fire();          
-            this.timeToShoot = time + 1000;
+            this.timeToShoot = 0;
             let angle = Phaser.Math.Angle.Between(this.x, this.y, this.target.x, this.target.y);
             if (angle > .875 * Math.PI || angle <= -.875 * Math.PI) {
                 this.anims.play('headtower_le', true);
@@ -425,7 +426,7 @@ class Lurker extends Hydralisk {
         this.setPosition(this.follower.vec.x, this.follower.vec.y);
         
         if (this.follower.vec.x > prevX) {
-            if (this.follower.vec.y > prevY) {
+            if (this.follower.vec.y > prevY + 2) {
                 // if (Math.abs(this.body.velocity.x) < Math.abs(this.body.velocity.y)) {
                 //     this.anims.play('lurker_dldiag', true).setFlipX(false);
                 // } else if (Math.abs(this.body.velocity.x) > Math.abs(this.body.velocity.y)) {
@@ -433,7 +434,7 @@ class Lurker extends Hydralisk {
                 // } else {
                     this.anims.play('lurker_ddiag', true).setFlipX(false);
                 // }
-            } else if (this.follower.vec.y < prevY) {
+            } else if (this.follower.vec.y < prevY - 2) {
                 // if (Math.abs(this.body.velocity.x) < Math.abs(this.body.velocity.y)) {
                 //     this.anims.play('lurker_uhdiag', true).setFlipX(false);
                 // } else if (Math.abs(this.body.velocity.x) > Math.abs(this.body.velocity.y)) {
@@ -445,7 +446,7 @@ class Lurker extends Hydralisk {
                 this.anims.play('lurker_side', true).setFlipX(false);
             }
         } else if (this.follower.vec.x < prevX) {
-            if (this.follower.vec.y > prevY) {
+            if (this.follower.vec.y > prevY + 2) {
             //     if (Math.abs(this.body.velocity.x) < Math.abs(this.body.velocity.y)) {
             //         this.anims.play('lurker_dldiag', true).setFlipX(true);
             //     } else if (Math.abs(this.body.velocity.x) > Math.abs(this.body.velocity.y)) {
@@ -453,7 +454,7 @@ class Lurker extends Hydralisk {
             //     } else {
                     this.anims.play('lurker_ddiag', true).setFlipX(true);
             //     }
-            } else if (this.follower.vec.y < prevY) {
+            } else if (this.follower.vec.y < prevY - 2) {
             //     if (Math.abs(this.body.velocity.x) < Math.abs(this.body.velocity.y)) {
             //         this.anims.play('lurker_uhdiag', true).setFlipX(true);
             //     } else if (Math.abs(this.body.velocity.x) > Math.abs(this.body.velocity.y)) {
@@ -729,13 +730,16 @@ class GameScene extends Phaser.Scene {
     }
     
     update(time, delta) {
-        Phaser.Actions.Call(hydralisks.getChildren(), function(hydra) {
-            this.children.bringToTop(hydra);
+        Phaser.Actions.Call(lurkers.getChildren(), lurker => {
+            this.children.bringToTop(lurker);
         }, this);
-        Phaser.Actions.Call(headtowers.getChildren(), function(tower) {
+        Phaser.Actions.Call(hydralisks.getChildren(), hydralisk => {
+            this.children.bringToTop(hydralisk);
+        }, this);
+        Phaser.Actions.Call(headtowers.getChildren(), tower => {
             this.children.bringToTop(tower);
         }, this);
-        Phaser.Actions.Call(bullets.getChildren(), function(bullet) {
+        Phaser.Actions.Call(bullets.getChildren(), bullet => {
             this.children.bringToTop(bullet);
         }, this);
     
