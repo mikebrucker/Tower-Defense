@@ -17,4 +17,4 @@ Num3: Zoom(x1.5).
 Num4: Zoom(x1.75).  
 Num5: Zoom(x2).  
 Num9: Zoom In.  
-Num10: Zoom Out.  
+Num0: Zoom Out.  
