@@ -49,10 +49,10 @@ class HUD extends Phaser.Scene {
             buildButton.setFill('firebrick').setStroke('gold').setAlpha(0.33);
             if (demolish) {
                 demolishButton.setFill('gold').setStroke('firebrick').setAlpha(1);
-                this.input.setDefaultCursor('url(public/assets/redcursor.cur), pointer');
+                this.input.setDefaultCursor('url(../images/redcursor.cur), pointer');
             } else {
                 demolishButton.setFill('firebrick').setStroke('gold').setAlpha(0.33);
-                this.input.setDefaultCursor('url(public/assets/cursor.cur), pointer');
+                this.input.setDefaultCursor('url(../images/cursor.cur), pointer');
             }
         }, this).setAlpha(0.33).setOrigin(0, 0.5);
         
@@ -63,7 +63,7 @@ class HUD extends Phaser.Scene {
             if (resources > 0) {
                 build = !build;
                 demolish = false;
-                this.input.setDefaultCursor('url(public/assets/cursor.cur), pointer');
+                this.input.setDefaultCursor('url(../images/cursor.cur), pointer');
                 demolishButton.setFill('firebrick').setStroke('gold').setAlpha(0.33);
                 if (build) {
                     buildButton.setFill('gold').setStroke('firebrick').setAlpha(1);

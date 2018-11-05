@@ -27,29 +27,29 @@ class BootGame extends Phaser.Scene {
             this.scene.start('GameScene');
         }, this);
 
-        this.load.tilemapTiledJSON('map', 'public/images/sunken_defense_path.json');
-        this.load.image('tiles', 'public/images/ashlands_tileset.png');
-        this.load.image('tower_overlay', 'public/images/tower_overlay.png');
-        this.load.image('bullet_single', 'public/images/bullet_single.png');
-        this.load.atlas('headtower', 'public/images/headtower.png', 'public/images/headtower.json');
-        this.load.atlas('hydralisk', 'public/images/hydralisk.png', 'public/images/hydralisk.json');
-        this.load.atlas('lurker', 'public/images/lurker.png', 'public/images/lurker.json');
-        this.load.atlas('bullet', 'public/images/bullet.png', 'public/images/bullet.json');
-        this.load.audio('hydra_birth', 'public/audio/hydra_birth.ogg');
-        this.load.audio('hydra_death', 'public/audio/hydra_death.ogg');
-        this.load.audio('lurker_birth', 'public/audio/lurker_birth.ogg');
-        this.load.audio('lurker_death', 'public/audio/lurker_death.ogg');
-        this.load.audio('bullet', 'public/audio/bullet.ogg');
-        this.load.audio('build_tower', 'public/audio/build_tower.ogg');
-        this.load.audio('demolish_tower', 'public/audio/demolish_tower.ogg');
-        this.load.audio('beep', 'public/audio/beep.ogg');
-        this.load.audio('egg', 'public/audio/egg.ogg');
-        this.load.audio('victory', 'public/audio/victory.ogg');
-        this.load.audio('lose', 'public/audio/lose.ogg');
-        this.load.audio('upgrade', 'public/audio/upgrade.ogg');
-        this.load.audio('error', 'public/audio/error.ogg');
-        this.load.audio('escape', 'public/audio/escape.ogg');
-        this.load.audio('game_track', 'public/audio/battle.wav');
+        this.load.tilemapTiledJSON('map', '../images/sunken_defense_path.json');
+        this.load.image('tiles', '../images/ashlands_tileset.png');
+        this.load.image('tower_overlay', '../images/tower_overlay.png');
+        this.load.image('bullet_single', '../images/bullet_single.png');
+        this.load.atlas('headtower', '../images/headtower.png', '../images/headtower.json');
+        this.load.atlas('hydralisk', '../images/hydralisk.png', '../images/hydralisk.json');
+        this.load.atlas('lurker', '../images/lurker.png', '../images/lurker.json');
+        this.load.atlas('bullet', '../images/bullet.png', '../images/bullet.json');
+        this.load.audio('hydra_birth', '../audio/hydra_birth.ogg');
+        this.load.audio('hydra_death', '../audio/hydra_death.ogg');
+        this.load.audio('lurker_birth', '../audio/lurker_birth.ogg');
+        this.load.audio('lurker_death', '../audio/lurker_death.ogg');
+        this.load.audio('bullet', '../audio/bullet.ogg');
+        this.load.audio('build_tower', '../audio/build_tower.ogg');
+        this.load.audio('demolish_tower', '../audio/demolish_tower.ogg');
+        this.load.audio('beep', '../audio/beep.ogg');
+        this.load.audio('egg', '../audio/egg.ogg');
+        this.load.audio('victory', '../audio/victory.ogg');
+        this.load.audio('lose', '../audio/lose.ogg');
+        this.load.audio('upgrade', '../audio/upgrade.ogg');
+        this.load.audio('error', '../audio/error.ogg');
+        this.load.audio('escape', '../audio/escape.ogg');
+        this.load.audio('game_track', '../audio/battle.wav');
     }
 
     create() {

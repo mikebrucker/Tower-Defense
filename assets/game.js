@@ -536,7 +536,7 @@ class GameScene extends Phaser.Scene {
         game_track.play();
 
         this.scene.launch('HUD');
-        this.input.setDefaultCursor('url(public/assets/cursor.cur), pointer')
+        this.input.setDefaultCursor('url(../images/cursor.cur), pointer')
         
         const map = this.make.tilemap({ key: 'map' });
         const tileset = map.addTilesetImage('ashlands', 'tiles');
